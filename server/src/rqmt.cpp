@@ -5,8 +5,6 @@
 #include <sstream>
 #include <vector>
 #include <nlohmann/json.hpp>
-#include <fcntl.h>
-#include <io.h>
 
 #include "lsp.h"
 #include "util.h"
@@ -16,14 +14,12 @@
 using json = nlohmann::json;
 
 Message readMessage(Workspace& wsp) {
+    (void)wsp;
+
     std::string line;
     Message message;
 
-    wsp.log << "Decoding New Message:";
-
     while (std::getline(std::cin, line)) {
-        wsp.log << line;
-
         if (line == "\r" || line.empty())
             break;
 
@@ -31,7 +27,7 @@ Message readMessage(Workspace& wsp) {
     }
 
     if (std::cin.fail() && !std::cin.eof()) {
-        wsp.log << "Error reading headers: " << std::strerror(errno);
+        // wsp.log << "Error reading headers: " << std::strerror(errno);
         return Message();
     }
 
@@ -39,7 +35,6 @@ Message readMessage(Workspace& wsp) {
 
     std::string body(message.getContentLength(), '\0');
     std::cin.read(&body[0], message.getContentLength());
-    wsp.log << body;
 
     message.addBody(body);
 
@@ -49,8 +44,6 @@ Message readMessage(Workspace& wsp) {
 //TODO: rply class, refactor,
 void handleMessage(const Message& msg, Workspace& wsp) {
     std::string method = msg.getMethod();
-
-    wsp.log << "handleMessage: " + method;
 
     const auto& handlers = getRequestCallbackRegistry();
 
@@ -66,7 +59,12 @@ int main() {
     std::cout.sync_with_stdio(false);
     std::cin.tie(nullptr);
 
-    _setmode(_fileno(stdout), _O_BINARY);
+    #ifdef _WIN32
+        #include <io.h>
+        #include <fcntl.h>
+        _setmode(_fileno(stdout), _O_BINARY);
+        _setmode(_fileno(stdin), _O_BINARY);
+    #endif
 
     Workspace wsp;
 

@@ -197,6 +197,7 @@ In progress:
 - Alias validation
 - Tag syntax
 - Decorators syntax
+- Link tests and implementations
 
 ### v0.3: Modularity and Usability
 

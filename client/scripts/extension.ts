@@ -7,17 +7,27 @@ import {
     TransportKind
 } from 'vscode-languageclient/node';
 
+// client.ts
+function getOS(): string {
+  switch (process.platform) {
+    case 'win32': return 'windows';
+    case 'linux': return 'linux';
+    case 'darwin': return 'macos';
+    default: return 'Unknown';
+  }
+}
+
 let client: LanguageClient;
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('Extension activated');
 
     // Path to your compiled C++ LSP server executable
-    const serverExe = context.asAbsolutePath(
-        path.join('server', 'out', 'bin', 'windows', 'rqmt.exe') // adjust name/path
-    );
+    const pathToExe = path.join('server', 'out', 'bin', getOS(), process.platform === 'win32' ? 'rqmt.exe' : 'rqmt');
 
-    console.log(path.join('server', 'out', 'bin', 'windows', 'rqmt.exe'));
+    const serverExe = context.asAbsolutePath(pathToExe);
+
+    console.log(pathToExe);
 
     const serverOptions: ServerOptions = {
         run: {

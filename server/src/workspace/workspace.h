@@ -10,7 +10,7 @@ class Workspace {
         
     public:
         std::unordered_map<std::string, RqmtFile*> files;
-        Logger log;
+        // Logger log;
 
         Workspace();
         void openRqmtFile(std::string uri, std::string text);

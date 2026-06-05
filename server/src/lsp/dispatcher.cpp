@@ -31,7 +31,7 @@ static void handleSemanticTokens(const Message& msg, Workspace& wsp) {
 
     if(finder == wsp.files.end()) {
         Reply().write();
-        wsp.log << "Got request \"" << msg.getMethod() << "\" for " << uri << ": No open file to provide tokens";
+        // wsp.log << "Got request \"" << msg.getMethod() << "\": No open file to provide tokens";
         return;
     }
 
@@ -54,7 +54,7 @@ static void handleChangeFile(const Message& msg, Workspace& wsp) {
 
     if(finder == wsp.files.end()) {
         Reply().write();
-        wsp.log << "Got request \"" << msg.getMethod() << "\" for " << uri << ": No open file to track changes";
+        // wsp.log << "Got request \"" << msg.getMethod() << "\": No open file to track changes";
         return;
     }
 
@@ -68,7 +68,7 @@ static void handleDiagnostics(const Message& msg, Workspace& wsp) {
 
     if(finder == wsp.files.end()) {
         Reply().write();
-        wsp.log << "Got request \"" << msg.getMethod() << "\" for " << uri << ": No open file to track changes";
+        // wsp.log << "Got request \"" << msg.getMethod() << "\": No open file to track changes";
         return;
     }
 
@@ -84,13 +84,11 @@ static void handleDefinition(const Message& msg, Workspace& wsp) {
 
     if(finder == wsp.files.end()) {
         Reply().write();
-        wsp.log << "Got request \"" << msg.getMethod() << "\" for " << uri << ": No open file to track changes";
+        // wsp.log << "Got request \"" << msg.getMethod() << "\": No open file to track changes";
         return;
     }
 
     json res = finder->second->getGoToDefinition(msg.getTextLocation());
-
-    wsp.log << res.dump();
     
     Reply(msg.getId(), res).write();
 }

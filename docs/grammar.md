@@ -35,6 +35,8 @@ attribute_keyword
      | "priority"
      | "tags"
      | "alias"
+     | "test"
+     | "implementation"
 
 identifier
     := positive_integer
