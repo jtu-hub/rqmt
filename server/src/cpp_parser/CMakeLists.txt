@@ -1,0 +1,5 @@
+add_library(cpp_parser cpp_parser.cpp cpp_parser_util.cpp cpp_syntax_definitions.cpp cpp_diagnostic_definitions.cpp cpp_attribute_definitions.cpp cpp_semantic_token_definitions.cpp cpp_ast_merger.cpp)
+
+target_include_directories(cpp_parser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_link_libraries(cpp_parser tokenizer util lsp)

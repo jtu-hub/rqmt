@@ -1,0 +1,27 @@
+*.x
+*.o
+*.exe
+*.obj
+*.pdb
+*.ilk
+
+*.log
+
+build/
+test/
+server/out/
+CMakeFiles/
+CMakeCache.*
+out
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+
+node_modules/
+.vscode-test
+
+tsconfig.tsbuildinfo
+
+Makefile
+#workspace path is to set the path to the workspace for C++, currently used for dev logging, TBD how I will proceed with it..
+workspace_path.h

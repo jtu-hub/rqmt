@@ -1,0 +1,382 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "rqmt",
+  "scopeName": "source.rqmt",
+
+  "patterns": [
+    {
+      "include": "#fenced-python"
+    },
+    {
+      "include": "#fenced-javascript"
+    },
+    {
+      "include": "#fenced-typescript"
+    },
+    {
+      "include": "#fenced-html"
+    },
+    {
+      "include": "#fenced-xml"
+    },
+    {
+      "include": "#fenced-json"
+    },
+    {
+      "include": "#fenced-c"
+    },
+    {
+      "include": "#fenced-cpp"
+    },
+    {
+      "include": "#fenced-java"
+    },
+    {
+      "include": "#fenced-rust"
+    },
+    {
+      "include": "#fenced-go"
+    },
+    {
+      "include": "#fenced-shell"
+    },
+    {
+      "include": "#fenced-markdown"
+    },
+    {
+      "include": "#fenced-yaml"
+    },
+    {
+      "include": "#fenced-css"
+    },
+    {
+      "include": "#fenced-jsx"
+    },
+    {
+      "include": "#fenced-tsx"
+    },
+    {
+      "include": "#fenced-php"
+    },
+    {
+      "include": "#fenced-r"
+    },
+    {
+      "include": "#fenced-makefile"
+    },
+    {
+      "include": "#fenced-powershell"
+    },
+    {
+      "include": "#fenced-sql"
+    },
+    {
+      "include": "#fenced-latex"
+    },
+    {
+      "include": "#fenced-dockerfile"
+    },
+    {
+      "include": "#fenced-graphql"
+    }
+  ],
+
+  "repository": {
+    "fenced-python": {
+      "begin": "^\\s*```(python|py)$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.fence.rqmt"
+        },
+        "1": {
+          "name": "entity.name.language.python.rqmt"
+        }
+      },
+      "end": "^\\s*```$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.fence.rqmt"
+        }
+      },
+      "contentName": "meta.embedded.block.python",
+      "patterns": [
+        {
+          "include": "source.python"
+        }
+      ]
+    },
+
+    "fenced-javascript": {
+      "begin": "^\\s*```(javascript|js)$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.fence.rqmt"
+        },
+        "1": {
+          "name": "entity.name.language.js.rqmt"
+        }
+      },
+      "end": "^\\s*```$",
+      "contentName": "meta.embedded.block.javascript",
+      "patterns": [
+        {
+          "include": "source.js"
+        }
+      ]
+    },
+
+    "fenced-typescript": {
+      "begin": "^\\s*```(typescript|ts)$",
+      "end": "^\\s*```$",
+      "contentName": "meta.embedded.block.typescript",
+      "patterns": [
+        {
+          "include": "source.ts"
+        }
+      ]
+    },
+
+    "fenced-html": {
+      "begin": "^\\s*```html$",
+      "end": "^\\s*```$",
+      "contentName": "meta.embedded.block.html",
+      "patterns": [
+        {
+          "include": "text.html.basic"
+        }
+      ]
+    },
+
+    "fenced-xml": {
+      "begin": "^\\s*```xml$",
+      "end": "^\\s*```$",
+      "contentName": "meta.embedded.block.xml",
+      "patterns": [
+        {
+          "include": "text.xml"
+        }
+      ]
+    },
+
+    "fenced-json": {
+      "begin": "^\\s*```json$",
+      "end": "^\\s*```$",
+      "contentName": "meta.embedded.block.json",
+      "patterns": [
+        {
+          "include": "source.json"
+        }
+      ]
+    },
+
+    "fenced-c": {
+      "begin": "^\\s*```c$",
+      "end": "^\\s*```$",
+      "contentName": "meta.embedded.block.c",
+      "patterns": [
+        {
+          "include": "source.c"
+        }
+      ]
+    },
+
+    "fenced-cpp": {
+      "begin": "^\\s*```(cpp|c\\+\\+)$",
+      "end": "^\\s*```$",
+      "contentName": "meta.embedded.block.cpp",
+      "patterns": [
+        {
+          "include": "source.cpp"
+        }
+      ]
+    },
+
+    "fenced-java": {
+      "begin": "^\\s*```java$",
+      "end": "^\\s*```$",
+      "contentName": "meta.embedded.block.java",
+      "patterns": [
+        {
+          "include": "source.java"
+        }
+      ]
+    },
+
+    "fenced-rust": {
+      "begin": "^\\s*```rust$",
+      "end": "^\\s*```$",
+      "contentName": "meta.embedded.block.rust",
+      "patterns": [
+        {
+          "include": "source.rust"
+        }
+      ]
+    },
+
+    "fenced-go": {
+      "begin": "^\\s*```go$",
+      "end": "^\\s*```$",
+      "contentName": "meta.embedded.block.go",
+      "patterns": [
+        {
+          "include": "source.go"
+        }
+      ]
+    },
+
+    "fenced-shell": {
+      "begin": "^\\s*```(sh|bash|shell)$",
+      "end": "^\\s*```$",
+      "contentName": "meta.embedded.block.shell",
+      "patterns": [
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+
+  
+    "fenced-markdown": {
+      "begin": "^```(markdown|md)$",
+      "end": "^```$",
+      "contentName": "meta.embedded.block.markdown",
+      "patterns": [
+        {
+          "include": "text.html.markdown"
+        }
+      ]
+    },
+
+    "fenced-yaml": {
+      "begin": "^```(yaml|yml)$",
+      "end": "^```$",
+      "contentName": "meta.embedded.block.yaml",
+      "patterns": [
+        {
+          "include": "source.yaml"
+        }
+      ]
+    },
+
+    "fenced-css": {
+      "begin": "^```css$",
+      "end": "^```$",
+      "contentName": "meta.embedded.block.css",
+      "patterns": [
+        {
+          "include": "source.css"
+        }
+      ]
+    },
+
+    "fenced-jsx": {
+      "begin": "^```jsx$",
+      "end": "^```$",
+      "contentName": "meta.embedded.block.jsx",
+      "patterns": [
+        {
+          "include": "source.js.jsx"
+        }
+      ]
+    },
+
+    "fenced-tsx": {
+      "begin": "^```tsx$",
+      "end": "^```$",
+      "contentName": "meta.embedded.block.tsx",
+      "patterns": [
+        {
+          "include": "source.tsx"
+        }
+      ]
+    },
+
+    "fenced-php": {
+      "begin": "^```php$",
+      "end": "^```$",
+      "contentName": "meta.embedded.block.php",
+      "patterns": [
+        {
+          "include": "source.php"
+        }
+      ]
+    },
+
+    "fenced-r": {
+      "begin": "^```r$",
+      "end": "^```$",
+      "contentName": "meta.embedded.block.r",
+      "patterns": [
+        {
+          "include": "source.r"
+        }
+      ]
+    },
+
+    "fenced-makefile": {
+      "begin": "^```(make|makefile)$",
+      "end": "^```$",
+      "contentName": "meta.embedded.block.makefile",
+      "patterns": [
+        {
+          "include": "source.makefile"
+        }
+      ]
+    },
+
+    "fenced-powershell": {
+      "begin": "^```(powershell|ps1|pwsh)$",
+      "end": "^```$",
+      "contentName": "meta.embedded.block.powershell",
+      "patterns": [
+        {
+          "include": "source.powershell"
+        }
+      ]
+    },
+
+    "fenced-sql": {
+      "begin": "^```sql$",
+      "end": "^```$",
+      "contentName": "meta.embedded.block.sql",
+      "patterns": [
+        {
+          "include": "source.sql"
+        }
+      ]
+    },
+
+    "fenced-latex": {
+      "begin": "^```(latex|tex)$",
+      "end": "^```$",
+      "contentName": "meta.embedded.block.latex",
+      "patterns": [
+        {
+          "include": "text.tex.latex"
+        }
+      ]
+    },
+
+    "fenced-dockerfile": {
+      "begin": "^```dockerfile$",
+      "end": "^```$",
+      "contentName": "meta.embedded.block.dockerfile",
+      "patterns": [
+        {
+          "include": "source.dockerfile"
+        }
+      ]
+    },
+
+    "fenced-graphql": {
+      "begin": "^```(graphql|gql)$",
+      "end": "^```$",
+      "contentName": "meta.embedded.block.graphql",
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
+    }
+  }
+}

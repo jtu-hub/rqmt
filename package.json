@@ -1,0 +1,188 @@
+{
+  "name": "rqmt",
+  "displayName": "RQMT Language Support",
+  "description": "This extension provides language support for the language RQMT",
+  "author": "Jonas T. Ulbrich",
+  "license": "MIT",
+  "version": "0.0.1",
+  "publisher": "The Pelican",
+  "categories": [],
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "main": "./client/out/extension",
+  "contributes": {
+    "languages": [
+      {
+        "id": "rqmt",
+        "aliases": [
+          "RQMT",
+          "rqmt"
+        ],
+        "extensions": [
+          ".rqmt"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "rqmt",
+        "scopeName": "source.rqmt",
+        "path": "./syntaxes/RQMT.tmLanguage.json",
+
+        "embeddedLanguages": {
+          "meta.embedded.block.python": "python",
+          "meta.embedded.block.javascript": "javascript",
+          "meta.embedded.block.typescript": "typescript",
+          "meta.embedded.block.html": "html",
+          "meta.embedded.block.xml": "xml",
+          "meta.embedded.block.json": "json",
+          "meta.embedded.block.c": "c",
+          "meta.embedded.block.cpp": "cpp",
+          "meta.embedded.block.java": "java",
+          "meta.embedded.block.rust": "rust",
+          "meta.embedded.block.go": "go",
+          "meta.embedded.block.shell": "shellscript",
+          "meta.embedded.block.markdown": "markdown",
+          "meta.embedded.block.yaml": "yaml",
+          "meta.embedded.block.css": "css",
+          "meta.embedded.block.jsx": "javascriptreact",
+          "meta.embedded.block.tsx": "typescriptreact",
+          "meta.embedded.block.php": "php",
+          "meta.embedded.block.r": "r",
+          "meta.embedded.block.makefile": "makefile",
+          "meta.embedded.block.powershell": "powershell",
+          "meta.embedded.block.sql": "sql",
+          "meta.embedded.block.latex": "latex",
+          "meta.embedded.block.dockerfile": "dockerfile",
+          "meta.embedded.block.graphql": "graphql"
+        }
+      }
+    ],
+    "configurationDefaults": {
+      "editor.semanticTokenColorCustomizations": {
+        "enabled": true,
+        "rules": {
+          "keyword.req:rqmt": {
+            "foreground": "#CCB350",
+            "bold": true
+          },
+          "keyword.fr:rqmt": {
+            "foreground": "#CCB350",
+            "bold": true
+          },
+          "keyword.br:rqmt": {
+            "foreground": "#CCB350",
+            "bold": true
+          },
+          "keyword.nfr:rqmt": {
+            "foreground": "#CCB350",
+            "bold": true
+          },
+          "keyword.ur:rqmt": {
+            "foreground": "#CCB350",
+            "bold": true
+          },
+          "keyword.sr:rqmt": {
+            "foreground": "#CCB350",
+            "bold": true
+          },
+          "meta.attribute.author:rqmt": {
+            "foreground": "#FFBF7De8",
+            "italic": true
+          },
+          "meta.attribute.title:rqmt": {
+            "foreground": "#FFBF7De8",
+            "italic": true,
+            "bold": false,
+            "underline": false
+          },
+          "meta.attribute.description:rqmt": {
+            "foreground": "#FFBF7De8",
+            "italic": true
+          },
+          "meta.attribute.date:rqmt": {
+            "foreground": "#FFBF7De8",
+            "italic": true
+          },
+          "meta.attribute.type:rqmt": {
+            "foreground": "#FFBF7De8",
+            "italic": true
+          },
+          "meta.title:rqmt": {
+            "foreground": "#cacaca",
+            "bold": true,
+            "underline": true
+          },
+          "meta.description:rqmt": {
+            "italic": true
+          },
+          "meta.alias": {
+            "foreground": "#ed9ec8",
+            "italic": true
+          },
+          "meta.reference": {
+            "foreground": "#ed9ec8",
+            "italic": true,
+            "underline": true
+          },
+          "punctuation.delimiter.reference": {
+            "foreground": "#ebcedd",
+            "bold": true
+          },
+          "punctuation.brace.alias": {
+            "foreground": "#CCB350",
+            "bold": true
+          },
+          "source.id": {
+            "foreground": "#CCB350",
+            "bold": true
+          },
+          "punctuation.id": {
+            "foreground": "#CCB350",
+            "bold": true
+          },
+          "string.unquoted:rqmt": {
+            "foreground": "#5FA2D9"
+          },
+          "string.backtick": {
+            "foreground": "#4af1bf"
+          },
+          "punctuation.delimiter.block": {
+            "foreground": "#aeebd9"
+          },
+          "string.math": {
+            "foreground": "#bc74f4"
+          },
+          "punctuation.delimiter.math": {
+            "foreground": "#d4abf3"
+          },
+          "punctuation.separator.colon.title:rqmt": {
+            "foreground": "#cacaca",
+            "bold": true
+          },
+          "pun.separator.colon.attribute:rqmt": {
+            "foreground": "#cacaca",
+            "bold": true
+          }
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -b",
+    "watch": "tsc -b -w",
+    "postinstall": "cd client && npm install"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.7",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.1",
+    "vscode-markdown-languageservice": "^0.5.0-alpha.11",
+    "vscode-uri": "^3.1.0"
+  }
+}

@@ -1,0 +1,297 @@
+author: Jonas T. Ulbrich
+
+This specification is written in RQMT.
+
+The language has been intentionally employed to define its own
+structure, semantics, and behavioral requirements.
+
+This recursive definition serves both as the normative specification
+of the language and as a demonstration of its ability to represent
+structured requirements in a human-readable and machine-processable
+form.
+
+
+req-1 RQMT Language Specification:
+    An implementation shall be considered compliant if it satisfies all
+    mandatory requirements defined herein.
+
+    req-2 Scope:
+        The specification shall define:
+        - The lexical structure of the language.
+        - The syntactic structure of the language.
+        - The semantic interpretation of language constructs.
+        - The requirements imposed on compliant implementations.
+
+    req-3 Language Principles:
+        The language shall:
+        - Remain human-readable.
+        - Remain machine-processable.
+        - Support deterministic parsing.
+        - Support traceability.
+        - Support tooling integration.
+        - Preserve compatibility with version control workflows.
+
+    req-4 Abstract Syntax Tree:
+        An RQMT document shall be representable as an Abstract Syntax Tree.
+
+        req-5 Document Node:
+            The root node of the AST shall represent the active document.
+
+        req-6 Requirement Node:
+            Requirement declarations shall produce requirement nodes.
+
+        req-7 Attribute Node:
+            Attribute declarations shall produce attribute nodes.
+
+        req-8 Text Node:
+            Rich text content shall produce text nodes.
+
+    req-76 Document Text Node:
+        Rich text content located at the document root shall produce
+        document text nodes.
+
+        req-77 Document Text Format:
+            Document text shall support Markdown syntax.
+
+    req-9 Lexical Structure:
+        req{req_keywords}-10 Requirement Keywords:
+            The following keywords shall define requirement nodes:
+            - req
+            - fr
+            - nfr
+            - br
+            - ur
+            - sr
+
+            req-11 Keyword Recognition:
+                Requirement keywords shall only be recognized at the beginning
+                of a logical line following optional indentation.
+
+            req-12 Keyword Isolation:
+                Keywords appearing within arbitrary text shall not be interpreted
+                as requirement declarations.
+
+        req{attr_keywords}-13 Attribute Keywords:
+            Attributes shall be identified through reserved attribute names.
+
+            req-14 Document Attributes:
+                The following document attributes shall be supported:
+                - author
+                - date
+
+            req-15 Requirement Attributes:
+                The following requirement attributes shall be supported:
+                - id
+                - author
+                - date
+                - title
+                - description
+
+    req-16 Requirement Identity:
+        req-17 Requirement Identifier:
+            Every requirement shall possess exactly one identifier.
+
+        req-18 Identifier Syntax:
+            Requirement identifiers shall be positive integer values.
+
+        req-19 Identifier Uniqueness:
+            Requirement identifiers shall be unique within a document.
+
+        req-20 Identifier Stability:
+            Requirement identifiers should remain stable throughout the
+            lifetime of a requirement.
+
+        req-21 Alias:
+            Requirements may define an alias.
+
+        req-22 Alias Purpose:
+            Aliases shall provide human-readable references to requirements.
+
+        req-23 Alias Uniqueness:
+            Aliases shall be unique within a document.
+
+        req-24 Alias Optionality:
+            Aliases shall be optional.
+
+    req-25 Syntax:
+        req-26 Requirement Declaration:
+            A requirement shall be defined by a requirement keyword.
+
+        req-27 Requirement Identifier Syntax:
+            A requirement identifier shall be declared through the sequence:
+            `<requirement keyword>-<identifier>`, see {req_keywords}
+
+        req-28 Requirement Alias Syntax:
+            A requirement alias shall be declared through the sequence:
+            `<requirement keyword>{<alias>}`, see {req_keywords}
+
+        req-29 Combined Alias And Identifier Syntax:
+            A requirement alias and identifier shall be declared through the sequence:
+            `<requirement keyword>{<alias>}-<identifier>`, see {req_keywords}
+
+        req-30 Title Definition:
+            A title shall be implicitly defined by text immediately following
+            the requirement declaration and preceding the first unescaped
+            colon on the logical line.
+
+            req-31 Title Line Constraint:
+                Titles shall not span multiple lines.
+
+        req-32 Description Definition:
+            Requirement descriptions shall be defined by rich text content
+            associated with a requirement.
+
+            req-78 Brief Description:
+                A brief description may be defined on the same logical line
+                as the requirement declaration.
+
+            req-79 Brief Description Interpretation:
+                Text following the first unescaped colon on a requirement
+                declaration line shall be interpreted as the brief
+                description.
+
+            req-80 Brief Description Format:
+                Brief descriptions shall be interpreted as plain text.
+
+            req-33 Description Format:
+                Requirement descriptions shall support Markdown syntax.
+
+        req-34 Attribute Definition:
+            Attributes shall be defined through the sequence:
+            `<attribute keyword>: <value>`, see {attr_keywords}
+
+            req-35 Multiline Values:
+                Attribute values may span multiple lines.
+
+    req-81 Escaping:
+        Reserved syntax characters may be escaped through a preceding
+        backslash.
+
+        req-82 Escaped Colon:
+            An escaped colon shall not terminate a title.
+            
+    req-36 Hierarchy:
+        req-37 Indentation:
+            Indentation shall define parent-child relationships.
+
+        req-38 Parent Resolution:
+            A node shall become a child of the nearest valid node with
+            a lower indentation level.
+
+        req-39 Hierarchical Requirements:
+            Requirements may contain child requirements.
+
+        req-40 Hierarchical Attributes:
+            Attributes shall belong to the nearest valid parent node.
+
+    req-41 References:
+        req-42 Alias References:
+            Requirements may be referenced through aliases.
+
+        req-43 Local References:
+            References to requirements within the current document shall
+            be expressed through:
+            `{alias}`
+
+        req-44 Relative References:
+            References to requirements in external documents shall be
+            expressed through:
+            `{reference}`
+
+        req-45 Reference Structure:
+            References shall be composed of components separated by dots.
+
+        req-46 Relative Path Prefix:
+            Leading dots shall denote relative filesystem traversal.
+
+            req-47 Current Directory:
+                A single leading dot shall denote the current directory.
+
+            req-48 Parent Directory:
+                Additional leading dots shall denote traversal to parent
+                directories.
+
+        req-49 Reference Component Resolution:
+            The final component of a reference shall identify the
+            referenced requirement.
+
+            req-50 Directory Components:
+                Components preceding the target requirement shall
+                identify directories and files.
+
+        req-51 Reference Resolution:
+            References shall be resolved during semantic analysis.
+
+        req-52 Requirement Target:
+            References shall resolve to requirements only.
+
+        req-53 Invalid Reference Target:
+            References which do not resolve to a requirement shall be
+            invalid.
+
+        req-54 Invalid References:
+            Unresolved references shall generate diagnostics.
+
+    req-55 Diagnostics:
+        req-56 Lexical Diagnostics:
+            Invalid lexical constructs shall generate diagnostics.
+
+        req-57 Syntax Diagnostics:
+            Invalid syntactic constructs shall generate diagnostics.
+
+        req-58 Semantic Diagnostics:
+            Invalid semantic constructs shall generate diagnostics.
+
+        req-59 Duplicate Identifier Diagnostics:
+            Duplicate identifiers shall generate diagnostics.
+
+        req-60 Duplicate Alias Diagnostics:
+            Duplicate aliases shall generate diagnostics.
+
+        req-61 Invalid Reference Diagnostics:
+            Invalid references shall generate diagnostics.
+
+    req-62 Tooling:
+        req-63 Reference Navigation:
+            Tooling implementations should provide navigation support
+            for references.
+
+        req-64 Hover Information:
+            Tooling implementations should provide hover information
+            for valid references.
+
+        req-65 Hover Path Resolution:
+            Hover information should display the resolved location of
+            referenced requirements.
+
+        req-66 Go To Definition:
+            Tooling implementations should provide navigation from
+            references to requirement declarations.
+
+        req-67 Find References:
+            Tooling implementations should provide navigation from
+            requirement declarations to their references.
+
+        req-68 Auto Completion:
+            Tooling implementations should provide auto completion
+            for references.
+
+        req-69 Reference Path Completion:
+            Auto completion should suggest valid path components.
+
+        req-70 Reference Requirement Completion:
+            Auto completion should suggest valid requirement targets.
+
+    req-71 Future Extensions:
+
+        req-72 Cross Repository References:
+            Future revisions may support references between repositories.
+
+        req-73 Traceability Metadata:
+            Future revisions may support explicit traceability constructs.
+
+        req-74 Test Integration:
+            Future revisions may support test artifact integration.
+
+        req-75 Validation Constraints:
+            Future revisions may support user-defined validation rules.
