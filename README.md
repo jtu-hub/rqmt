@@ -68,11 +68,13 @@ cmake --build build
 
 ```rqmt
 req-1 User Authentication:
+    [to_implement]
     The system shall authenticate users before granting access.
 
-    fr-2 Login:
+    fr{login}-2 Login:
         The system shall provide a login interface.
 
+    @draft
     nfr-3 Security:
         Authentication credentials shall be stored securely.
 ```
@@ -166,8 +168,11 @@ RQMT provides a common, easy to learn, structured representation that can be und
 RQMT is currently in active development, in an early stage. The language specification and tooling are evolving and may change significantly before the first stable release.
 
 ### Proof of Concept
+**Version: 0.1.0.x**
 
-Version: 0.1.0.x
+A rudimentary implementation of the LSP can be run as VSC extension:
+![RQMT LSP running in Visual Studio Code](docs/img/rqmt_preview.png)
+
 
 Implemented:
 - Lexer
@@ -175,34 +180,59 @@ Implemented:
 - AST generation
 - Incremental parsing
 - Syntax diagnostics
-- Semantic tokens
-- Go-to-definition
+- Semantic tokens and syntax high-lighting
+- Go-to-definition `reference` &rarr; `alias`
 
 In progress:
 - Semantic diagnostics
 - Auto-completion
 - Automatic ID generation
 
-### Roadmap
+## Roadmap
 
-### v0.2
-- Semantic diagnostics
+### v0.2: Core Semantics
+
+- Reference resolution 
+- Semantic diagnostics 
 - Alias validation
-- Duplicate ID detection
-- Reference resolution
+- Tag syntax
+- Decorators syntax
 
-### v0.3
+### v0.3: Modularity and Usability
+
 - Cross-file references
 - Workspace indexing
-- Find references
-- Hover information
-
-### v0.4
 - Auto-ID workflow
+- Hover information
+- Formatting
+
+### v0.4: Advanced Tooling
+
+- Workspace indexing (optimized)
 - Rename symbol
 - Traceability views
+- Export to Markdown/HTML
+- Configuration files (.rqmtconfig.json)
 
-### v1.0
+### v0.5: Automation and CI/CD
+
+- CI/CD Integration
+- Static Analysis (CLI: rqmt lint)
+- Flags: blocking releases, draft
+- Basic AI-assisted analysis (ambiguity, completeness)
+
+### v0.6: AI for Content
+
+- AI-assisted analysis (conflicts, standards compliance)
+- Collaborative review tools (GitHub/GitLab integration)
+
+### v0.7: Advanced AI and Collaboration
+
+- AI for domain-specific checks (e.g., ISO 26262 compliance)
+- Plugin system (custom rules/checks)
+
+### v1.0: Stability and Production
+
 - Stable language specification
 - Complete LSP support
 - Production-ready tooling

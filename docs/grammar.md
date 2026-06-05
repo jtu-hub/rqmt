@@ -30,6 +30,11 @@ attribute_keyword
      | "date"
      | "title"
      | "description"
+     | "type"
+     | "status"
+     | "priority"
+     | "tags"
+     | "alias"
 
 identifier
     := positive_integer
@@ -92,6 +97,35 @@ Examples:
 {..safety.estop}
 
 {...project.common.logging}
+```
+
+### Decorators WIP
+```rqmt
+@draft
+
+@blocked
+```
+
+### Tags WIP
+comma separated tags composed of charset [A-Za-z0-9_\-&], within the definition the may be comma- space- or new-line-separated. Multiple definitions of tags may be added, these will result 
+```rqmt
+req My Requirement:
+    [tag1, tag2, ...]
+   
+fr My Functional Requirement:
+    [tag1 tag2 ...]
+
+nfr My Non-Functional Requirement:
+    [
+        tag1
+        tag2
+        tag3
+    ]
+
+req My Requirement:
+    [tag1]
+    [tag2]
+    [...]
 ```
 
 ---
