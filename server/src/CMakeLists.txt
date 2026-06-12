@@ -1,8 +1,16 @@
-cmake_minimum_required(VERSION 4.0.0)
+cmake_minimum_required(VERSION 3.11.0)
 
 find_package(Python3 REQUIRED)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 project(rqmt)
+
+include(FetchContent)
+
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz)
+FetchContent_MakeAvailable(json)
 
 # Define the version part as a CMake variable (default: revision)
 set(VERSION_PART "build" CACHE STRING "Version part to bump: major, minor, patch, or revision")
@@ -44,7 +52,7 @@ function(rename_exe)
         add_custom_command(
             TARGET ${TARGET_NAME} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTPUT_DIR}
-            COMMAND ${CMAKE_COMMAND} -E rename ${TARGET_NAME}.x ${NEW_LOCATION}
+            COMMAND ${CMAKE_COMMAND} -E rename ${TARGET_NAME} ${NEW_LOCATION}
         )
     elseif(IOS)
         add_custom_command(
@@ -101,6 +109,7 @@ function(build_target)
             ${CMAKE_CURRENT_SOURCE_DIR}/workspace
             ${CMAKE_CURRENT_SOURCE_DIR}/lsp
             ${CMAKE_CURRENT_SOURCE_DIR}/util
+            nlohmann_json::nlohmann_json
         )
     endif()
 

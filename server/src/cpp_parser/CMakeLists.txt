@@ -2,4 +2,4 @@ add_library(cpp_parser cpp_parser.cpp cpp_parser_util.cpp cpp_syntax_definitions
 
 target_include_directories(cpp_parser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-target_link_libraries(cpp_parser tokenizer util lsp)
+target_link_libraries(cpp_parser tokenizer util lsp nlohmann_json::nlohmann_json)

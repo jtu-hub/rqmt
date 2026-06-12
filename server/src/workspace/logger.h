@@ -6,8 +6,6 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include <fcntl.h>
-#include <io.h>
 
 class Logger : public std::ofstream {
     private:
