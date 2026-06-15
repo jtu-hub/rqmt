@@ -11,7 +11,7 @@ to structure this file.
 
 ## [Unreleased]
 
-## [0.0.1-alpha] - 2026-06-05
+## [0.0.1-alpha] - 2026-06-15
 ### Added:
 - Lexer
 - Parser
