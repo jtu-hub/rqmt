@@ -5,3 +5,8 @@ vsc-extension-quickstart.md
 *.exe
 *.x
 *.o
+client/scripts/**
+server/src/**
+docs/**
+test/**
+build/**
