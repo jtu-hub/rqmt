@@ -5,9 +5,14 @@
 #include <sstream>
 #include <vector>
 #include <nlohmann/json.hpp>
+#ifdef _WIN32
+        #include <io.h>
+        #include <fcntl.h>
+#endif
 
 #include "lsp.h"
 #include "util.h"
+#include "version.h"
 #include "workspace.h"
 #include "dispatcher.h"
 
@@ -60,11 +65,11 @@ int main() {
     std::cin.tie(nullptr);
 
     #ifdef _WIN32
-        #include <io.h>
-        #include <fcntl.h>
         _setmode(_fileno(stdout), _O_BINARY);
         _setmode(_fileno(stdin), _O_BINARY);
     #endif
+
+    std::cerr << "RQMT Language Server: " << k_version_str << std::endl;
 
     Workspace wsp;
 
