@@ -4,10 +4,10 @@
   "author": "Jonas T. Ulbrich",
   "license": "MIT",
   "version": "0.0.1",
-  "publisher": "The Pelican",
+  "publisher": "jtu-hub",
   "repository": {
     "type": "git",
-    "url": "REPLACE_ME"
+    "url": "https://github.com/jtu-hub/rqmt"
   },
   "engines": {
     "vscode": "^1.75.0"
