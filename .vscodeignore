@@ -11,3 +11,6 @@ node_modules/**
 docs/**
 test/**
 build/**
+scripts/**
+tsconfig.js
+tsconfig.tsbuildinfo
