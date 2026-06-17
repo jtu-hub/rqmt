@@ -1,7 +1,7 @@
 {
   "name": "rqmt",
-  "displayName": "RQMT Language Support",
-  "description": "This extension provides language support for the language RQMT",
+  "displayName": "RQMT - Requirements Language",
+  "description": "Language support for the RQMT requirements engineering language, including syntax highlighting, diagnostics, validation, and language server features.",
   "author": "Jonas T. Ulbrich",
   "license": "MIT",
   "version": "0.0.1",
@@ -10,7 +10,25 @@
     "type": "git",
     "url": "https://github.com/jtu-hub/rqmt"
   },
-  "categories": [],
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Other"
+  ],
+  "keywords": [
+    "rqmt",
+    "requirements",
+    "requirements-engineering",
+    "requirement-specification",
+    "requirements-language",
+    "dsl",
+    "domain-specific-language",
+    "language-server",
+    "lsp",
+    "validation",
+    "specification",
+    "systems-engineering"
+  ],
   "engines": {
     "vscode": "^1.96.0"
   },
