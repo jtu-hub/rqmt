@@ -67,9 +67,12 @@ RqmtFile::RqmtFile(const std::string& uri, const std::string& input) : _uri(uri)
     while (std::getline(stream, line)) {
         int line_count = static_cast<int>(lines.size());
         
-        // std::cerr << "LINE " << line_count << ": " << line << "\n";
+        if(!line.empty() && line.back() == '\r') (void)line.pop_back();
 
-        tokens_t tks = tokenizeLine((line + '\n').c_str(), line_count);
+        line += '\n';
+        
+        // std::cerr << "LINE " << line_count << ": " << line << "\n";
+        tokens_t tks = tokenizeLine(line.c_str(), line_count);
 
         // std::cerr << "Tokens: ";
         // node_t* n = NULL;
@@ -146,9 +149,13 @@ void RqmtFile::applyChange(const ContentChange& change)
     std::vector<Line> new_lines;
 
     while (std::getline(stream, line)) {
+        if(!line.empty() && line.back() == '\r') (void)line.pop_back();
+
+        line += '\n';
+
         int line_count = change.range.start.line + static_cast<int>(new_lines.size());
 
-        tokens_t tks = tokenizeLine((line + '\n').c_str(), line_count);
+        tokens_t tks = tokenizeLine(line.c_str(), line_count);
 
         AbstractSyntaxTree line_ast = parseLine(tks, &indent_level, &indent_width, &indent_type);
 

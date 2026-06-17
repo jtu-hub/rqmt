@@ -15,6 +15,9 @@
     "vscode": "^1.96.0"
   },
   "main": "./client/out/extension",
+  "activationEvents": [
+    "onLanguage:rqmt"
+  ],
   "contributes": {
     "languages": [
       {

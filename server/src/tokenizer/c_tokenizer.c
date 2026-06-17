@@ -155,23 +155,10 @@ tokenizer_state_t handleNewLine(char c, tokenizer_state_t current_decoder_state,
 
     if(t == NULL) {
         return k_tokenizer_state_new_line;
-    } else if(t->type == k_token_type_nreturn ||
-              t->type == k_token_type_rreturn && c != '\n') {
-        // Note: every time '\n' happens. If '\r' appears we only increment the  
-        // line count when it is not followed by '\n','\r\n' will be joined in a 
-        // single token
+    } else if(t->type == k_token_type_nreturn) {
+        // Note: new lines are detected only with '\n'
         
-        token_t* prev_t = (token_t*)getNodeData(getNodeAt(tokens->tokens, -2));
-
         t->type = k_token_type_new_line;
-
-        if(t->type      == k_token_type_nreturn && prev_t != NULL &&
-           prev_t->type == k_token_type_rreturn   ) {
-            //remove last node of list, it's data is already stored in t
-            (void)pop(tokens->tokens, &last_node);
-
-            joinTokens(prev_t, t, &(tokens->token_count));
-        }
 
         return k_tokenizer_state_new_line;
     }
@@ -200,61 +187,6 @@ void addEOF(int token_line_number, int token_column, tokens_t* tokens) {
     addNewToken(token_line_number, token_column, tokens);
     
     getCurrentToken(tokens)->type = k_token_type_EOF;
-}
-
-tokens_t tokenize(FILE* input) {
-    m_check_pointer(input);
-    
-    int line_count = -1, column_count = 0;
-    tokenizer_state_t decoder_state = k_tokenizer_state_new_line;
-    list_t token_candidates = {0};
-    list_t* token_list = (list_t*)calloc(1, sizeof(list_t));
-    tokens_t tokens = {token_list, 0};
-    bool skip_getc = false;
-
-    addInitialNewLine(&tokens);
-    //loop throug chars to tokenize
-    int current_char = getc(input);
-    
-    while(current_char != EOF) {
-        char c = (char)current_char;
-        
-        decoder_state = handleNewLine(c, decoder_state, &tokens);
-
-        switch (decoder_state)
-        {
-        case k_tokenizer_state_new_line:
-            line_count++;
-            column_count = 0;
-            //!!! FALL THROUGH
-        case k_tokenizer_state_new_token:
-            skip_getc = false;
-            
-            getPotentialCandidates(c, &tokens, &token_candidates);
-            
-            addNewToken(line_count, column_count, &tokens);
-            //!!! FALL THROUGH
-        case k_tokenizer_state_add_char:
-            
-            decoder_state = foundEndOfToken(c, &skip_getc, &tokens, 
-                                            &token_candidates);
-            break;
-        
-        default:
-            decoder_state = k_tokenizer_state_new_token;
-            break;
-        }
-
-        //get next char
-        if(!skip_getc) {
-            current_char = getc(input);
-            column_count++;
-        }
-    }
-
-    addEOF(line_count, column_count, &tokens);
-
-    return tokens;
 }
 
 tokens_t tokenizeLine(const char* input, int line_count) {
