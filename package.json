@@ -14,6 +14,7 @@
   "engines": {
     "vscode": "^1.96.0"
   },
+  "icon": "resources/icon.png",
   "main": "./client/out/extension",
   "activationEvents": [
     "onLanguage:rqmt"

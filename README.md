@@ -1,4 +1,4 @@
-# RQMT
+![RQMT-icon](resources/md_title.png)
 
 > Structure is not a guideline; it is an agreement. The value of a language lies not in the freedom it provides, but in the ambiguity it removes.
 
