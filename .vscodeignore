@@ -3,8 +3,11 @@
 .gitignore
 vsc-extension-quickstart.md
 *.o
+**/*.cpp
+**/*.hpp
 client/scripts/**
 server/src/**
+node_modules/**
 docs/**
 test/**
 build/**
