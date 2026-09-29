@@ -5,7 +5,7 @@
 #include <nlohmann/json.hpp>
 
 #include "capabilities_registry.h"
-#include "lsp_util.h"
+#include "text_util.h"
 #include "cpp_semantic_token_definitions.h"
 
 using json = nlohmann::json;

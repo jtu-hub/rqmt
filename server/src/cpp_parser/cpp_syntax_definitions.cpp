@@ -416,7 +416,7 @@ void decodeReference(bool* skip_get_token, bool* escape_next_token, int* pos_in_
             SyntaxNode& child = parent.lastChild().newChild();
 
                         
-            parent.lastChild().addAttribute(AttributeId::link, "");
+            parent.lastChild().addAttribute(AttributeId::link, std::string(""));
             
             child = token;
             child = ref_brace;

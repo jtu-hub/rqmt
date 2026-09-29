@@ -85,7 +85,7 @@ void ASTMerger::merge(AbstractSyntaxTree& destination, const AbstractSyntaxTree&
             std::vector<NodeAttribute> refs = child.getAttributesById(AttributeId::link);
 
             for(NodeAttribute ref : refs) 
-                if(ref.valid) destination.addReference(child.getLine(), ref.value);
+                if(ref.valid) destination.addReference(child.getLine(), ref.value<std::string>());
 
             if(m_st_is_keyword(parent_id)) {
                 SemanticTokenDefinition new_def = getDescriptionBodyDefinition();
@@ -104,7 +104,7 @@ void ASTMerger::merge(AbstractSyntaxTree& destination, const AbstractSyntaxTree&
             std::vector<NodeAttribute> als = child.getAttributesById(AttributeId::alias);
 
             for(NodeAttribute al : als) 
-                if(al.valid) destination.addAlias(child.getLine(), al.value);
+                if(al.valid) destination.addAlias(child.getLine(), al.value<std::string>());
         }
 
         parent->addChild(child);

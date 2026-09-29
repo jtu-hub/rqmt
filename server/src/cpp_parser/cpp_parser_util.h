@@ -13,7 +13,7 @@ extern "C" {
 #include "cpp_attribute_definitions.h"
 #include "cpp_diagnostic_definitions.h"
 #include "cpp_semantic_token_definitions.h"
-#include "lsp_util.h"
+#include "text_util.h"
 
 #define m_is_syntax_node_keyword(syntax_node)   m_st_is_keyword((syntax_node)->id)
 #define m_is_syntax_node_attribute(syntax_node) m_st_is_attribute((syntax_node)->id)
@@ -61,7 +61,7 @@ class SyntaxNode {
         }
         
         void addChild(SyntaxNode& child);
-        void addAttribute(const AttributeId& attr_id, const std::string& value);
+        void addAttribute(const AttributeId& attr_id, const AttributeValueVariant& value);
         void addDiagnostic(const DiagnosticSeverity& severity, const DiagnosticId& id, std::string source, int line_start, int line_end, int column_start, int column_end);
         void removeDiagnosticOfType(const DiagnosticId& id);
         /**
@@ -71,7 +71,7 @@ class SyntaxNode {
         SyntaxNode& newChild();
         SyntaxNode& newChildFromToken(const token_t& token, const SemanticTokenDefinition& token_definition);
         void recomputeLength(int token_column, int token_lenght);
-        void addToLastAttributeOfTypeOrCreate(const AttributeId& attr_id, const std::string& attr_value);
+        void addToLastAttributeOfTypeOrCreate(const AttributeId& attr_id, const AttributeValueVariant& attr_value);
         void renameCurrentAttribute(AttributeId old_id, AttributeId new_id);
         NodeAttribute& lastAttribute();
         NodeAttribute& lastAttributeOfType(const AttributeId& attr_id);

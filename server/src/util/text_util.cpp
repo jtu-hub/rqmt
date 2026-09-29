@@ -1,6 +1,7 @@
 #include <iostream>
+#include <algorithm>
 
-#include "lsp_util.h"
+#include "text_util.h"
 #include "cpp_util.h"
 
 extern "C" {
@@ -87,6 +88,38 @@ Range::Range(const char* col_sep_range) {
     end   = TextLocation(vals[2], vals[3]);
 }
 
+void Range::unionStartIfInit(const TextLocation& other_start) {
+    if(start.line >= 0) 
+        start.line = std::min(start.line, other_start.line);
+    else
+        start.line = other_start.line;
+
+    if(start.column >= 0) 
+        start.column = std::min(start.column, other_start.column);
+    else
+        start.column = other_start.column;
+}
+
+void Range::unionEndIfInit(const TextLocation& other_end) {
+    if(end.line >= 0) 
+        end.line = std::max(end.line, other_end.line);
+    else
+        end.line = other_end.line;
+
+    if(start.column >= 0)
+        end.column = std::max(end.column, other_end.column);
+    else
+        end.column = other_end.column;
+}
+
+Range& Range::operator+=(const Range& other) {
+
+    unionStartIfInit(other.start);
+    unionEndIfInit(other.end);
+    
+    return *this;
+}
+
 RangeEntry RangeEntry::fromTextWithColumnRange(int line_number, const std::string& text_with_range)
 {
     const auto p1 = text_with_range.rfind(':');
@@ -101,7 +134,41 @@ RangeEntry RangeEntry::fromTextWithColumnRange(int line_number, const std::strin
     if (!parseInt(text_with_range.substr(p2 + 1, p1 - p2 - 1), column_start)) m_error_unhandled();
     if (!parseInt(text_with_range.substr(p1 + 1), column_end))                m_error_unhandled();
 
-    return RangeEntry{Range(line_number, column_start, line_number, column_end), text_with_range.substr(0, p2)};
+    return RangeEntry{text_with_range.substr(0, p2), Range(line_number, column_start, line_number, column_end)};
+}
+
+RangeEntry::RangeEntry(std::string value, int line_start, int column_start, int line_end, int column_end) :
+value(value),
+range(line_start, column_start, line_end, column_end)
+{}
+
+RangeEntry::RangeEntry(std::string value, Range range) :
+value(value),
+range(range)
+{}
+
+RangeEntry::RangeEntry(std::string value) :
+value(value),
+range()
+{}
+
+RangeEntry& RangeEntry::operator+=(const std::string& other)
+{
+    value += other;
+    return *this;
+}
+
+RangeEntry& RangeEntry::operator+=(const Range& other)
+{
+    range += other;
+    return *this;
+}
+
+RangeEntry& RangeEntry::operator+=(const RangeEntry& other)
+{
+    value += other.value;
+    range += other.range;
+    return *this;
 }
 
 bool Range::isInRange(int line, int column) const {

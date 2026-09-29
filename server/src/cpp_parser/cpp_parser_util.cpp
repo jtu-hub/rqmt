@@ -12,7 +12,7 @@ void SyntaxNode::addChild(SyntaxNode& child) {
     children.push_back(child);
 }
 
-void SyntaxNode::addAttribute(const AttributeId& attr_id, const std::string& value) {
+void SyntaxNode::addAttribute(const AttributeId& attr_id, const AttributeValueVariant& value) {
     //TBD change param to const NodeAttribute& as to addChild 
     auto& attrs = attributes[attr_id];
     
@@ -66,7 +66,7 @@ void SyntaxNode::recomputeLength(int token_column, int token_lenght) {
     length = token_column - location.column + token_lenght;
 }
 
-void SyntaxNode::addToLastAttributeOfTypeOrCreate(const AttributeId& attr_id, const std::string& attr_value) {
+void SyntaxNode::addToLastAttributeOfTypeOrCreate(const AttributeId& attr_id, const AttributeValueVariant& attr_value) {
     std::unordered_map<AttributeId, std::vector<NodeAttribute>>::iterator finder = attributes.find(attr_id);
 
     if(finder == attributes.end() || finder->second.size() == 0) {
@@ -209,7 +209,7 @@ void SyntaxNode::debugPrintSyntaxNode(int level) {
         for(auto& a : vec_a){
             for(int i = 0; i < level; i++) std::cerr << "    ";
 
-            std::cerr << "    > " << static_cast<int>(a.id) << ": " << a.value << "\n";
+            std::cerr << "    > " << static_cast<int>(a.id) << ": " << a.value<std::string>() << "\n";
         }
     }
 

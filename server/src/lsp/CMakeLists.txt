@@ -1,4 +1,4 @@
-add_library(lsp lsp.cpp dispatcher.cpp lsp_util.cpp)
+add_library(lsp lsp.cpp dispatcher.cpp)
 
 target_include_directories(lsp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
