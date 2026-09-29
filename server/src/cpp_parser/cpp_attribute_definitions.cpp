@@ -28,12 +28,16 @@ namespace
             nullptr,
             nullptr,
             nullptr,
+            nullptr,
+            nullptr,
         }},
 
         // LHS: Range
         {{
             nullptr,
             &addAssign<Range, Range>,
+            nullptr,
+            nullptr,
             nullptr,
             nullptr,
         }},
@@ -44,6 +48,8 @@ namespace
             &addAssign<RangeEntry, Range>,
             &addAssign<RangeEntry, RangeEntry>,
             &addAssign<RangeEntry, std::string>,
+            nullptr,
+            nullptr,
         }},
 
         // LHS: std::string
@@ -52,6 +58,28 @@ namespace
             nullptr,
             nullptr,
             &addAssign<std::string, std::string>,
+            nullptr,
+            nullptr,
+        }},
+
+        // LHS: TextSpan
+        {{
+            nullptr,
+            nullptr,
+            nullptr,
+            &addAssign<TextSpan, std::string>,
+            &addAssign<TextSpan, TextSpan>,
+            &addAssign<TextSpan, ColumnSpan>,
+        }},
+
+        // LHS: ColumnSpan
+        {{
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
+            &addAssign<ColumnSpan, ColumnSpan>,
         }},
     }};
 

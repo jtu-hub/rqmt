@@ -219,8 +219,10 @@ void decodeRequirement(bool* skip_get_token, bool* escape_next_token, int* pos_i
             child = token;
             child = id_number;
 
-            parent.addAttribute(AttributeId::req_id, std::string(token.value));
-            parent.addAttribute(AttributeId::req_id_range, rangeAttributeString(token.column, token.column + token.char_count));
+            parent.addAttribute(
+                AttributeId::req_id, 
+                TextSpan(std::string(token.value), ColumnSpan(token.column, token.column + token.char_count))
+            );
 
             id = SyntaxId::requirement_description;
             *pos_in_seq = 0;            
@@ -283,7 +285,7 @@ void decodeInlineReferenceName(bool* skip_get_token, bool* escape_next_token, in
             SyntaxNode& child = parent.newChild();
 
             
-            parent.addAttribute(AttributeId::alias, std::string(token.value));
+            parent.addAttribute(AttributeId::alias, TextSpan(token.value));
 
             child = token;
             child = alias_v;
@@ -323,7 +325,7 @@ void decodeInlineReferenceName(bool* skip_get_token, bool* escape_next_token, in
         } else {
             SyntaxNode& ref_name = parent.lastChild();
             
-            parent.addToLastAttributeOfTypeOrCreate(AttributeId::alias, ":" + rangeAttributeString(parent.getColumn(), ref_name.getColumn() + ref_name.getLength() + 1));
+            parent.addToLastAttributeOfTypeOrCreate(AttributeId::alias, ColumnSpan(parent.getColumn(), ref_name.getColumn() + ref_name.getLength() + 1));
             parent.lastAttributeOfType(AttributeId::alias).valid = true;
             
             SyntaxNode& closing_brace = parent.newChild();
@@ -416,7 +418,7 @@ void decodeReference(bool* skip_get_token, bool* escape_next_token, int* pos_in_
             SyntaxNode& child = parent.lastChild().newChild();
 
                         
-            parent.lastChild().addAttribute(AttributeId::link, std::string(""));
+            parent.lastChild().addAttribute(AttributeId::link, TextSpan(""));
             
             child = token;
             child = ref_brace;
@@ -470,7 +472,7 @@ void decodeReference(bool* skip_get_token, bool* escape_next_token, int* pos_in_
         } else if(isTokenOfType(SyntaxElement::brace_ref_c, token)) {
             SyntaxNode& child = parent.lastChild().lastChild();
                    
-            parent.lastChild().addToLastAttributeOfTypeOrCreate(AttributeId::link, ":" + rangeAttributeString(child.getColumn(), child.getColumn() + child.getLength()));
+            parent.lastChild().addToLastAttributeOfTypeOrCreate(AttributeId::link, ColumnSpan(child.getColumn(), child.getColumn() + child.getLength()));
             parent.lastChild().lastAttributeOfType(AttributeId::link).valid = true;
 
             (void)parent.lastChild().newChildFromToken(token, ref_brace);

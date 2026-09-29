@@ -17,6 +17,54 @@ class TextLocation {
         json toLSPJSON() const;
 };
 
+
+class ColumnSpan {
+    public:
+
+        friend std::ostream& operator<<(std::ostream& os, const ColumnSpan& span) {
+            os << "ColumnSpan("
+            << "start: " << span.start
+            << ", end: " << span.end
+            << ")";
+
+            return os;
+        }
+
+        int start;
+        int end;
+
+        ColumnSpan();
+        ColumnSpan(int column_start, int column_end);
+
+        ColumnSpan& operator+=(const ColumnSpan& other);
+};
+
+class TextSpan {
+    public:
+        friend std::ostream& operator<<(std::ostream& os, const TextSpan& span) {
+            os << "TextSpan("
+            << "value: " << span.value
+            << ", span: " << span.span
+            << ")";
+
+            return os;
+        }
+
+        std::string value;
+        ColumnSpan span;
+
+        TextSpan();
+        TextSpan(std::string value);
+        TextSpan(std::string value, int column_start, int column_end);
+        TextSpan(std::string value, ColumnSpan span);
+
+        static TextSpan fromTextWithColumnRange(const std::string& text_with_range);
+
+        TextSpan& operator+=(const std::string& other);
+        TextSpan& operator+=(const ColumnSpan& other);
+        TextSpan& operator+=(const TextSpan& other);
+};
+
 class Range {
     friend std::ostream& operator<<(std::ostream& os, const Range& range) {
         os << "Range("
@@ -52,8 +100,7 @@ class RangeEntry {
         Range range;
         std::string value;
         
-        friend std::ostream& operator<<(std::ostream& os, const RangeEntry& entry)
-        {
+        friend std::ostream& operator<<(std::ostream& os, const RangeEntry& entry) {
             os << "RangeEntry("
             << "value: " << entry.value << ", "
             << "range: " << entry.range << ")";
@@ -76,6 +123,7 @@ class RangeEntry {
         RangeEntry(std::string value, int line_start, int column_start, int line_end, int column_end);
         RangeEntry(std::string value, Range range);
         RangeEntry(std::string value);
+        RangeEntry(int line_number, TextSpan text_span);
 
         RangeEntry& operator+=(const std::string& other);
         RangeEntry& operator+=(const Range& other);

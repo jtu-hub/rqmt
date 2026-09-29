@@ -320,12 +320,12 @@ json AbstractSyntaxTree::getSemanticTokenData() {
     return res;
 }
 
-void AbstractSyntaxTree::addReference(int line_number, const std::string& text_with_col_range) {
-    references[line_number].push_back(RangeEntry::fromTextWithColumnRange(line_number,text_with_col_range));
+void AbstractSyntaxTree::addReference(int line_number, const TextSpan& text_with_col_range) {
+    references[line_number].push_back(RangeEntry(line_number, text_with_col_range));
 }
 
-void AbstractSyntaxTree::addAlias(int line_number, const std::string& text_with_col_range) {
-    RangeEntry parsed_alias = RangeEntry::fromTextWithColumnRange(line_number, text_with_col_range);
+void AbstractSyntaxTree::addAlias(int line_number, const TextSpan& text_with_col_range) {
+    RangeEntry parsed_alias = RangeEntry(line_number, text_with_col_range);
 
     aliases[parsed_alias.value] = parsed_alias.range;
 }

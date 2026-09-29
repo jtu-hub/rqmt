@@ -39,7 +39,9 @@ using AttributeValueVariant = std::variant<
     int,
     Range,
     RangeEntry,
-    std::string
+    std::string,
+    TextSpan,
+    ColumnSpan
 >;
 
 std::ostream& operator<<(std::ostream& os, const AttributeValueVariant& value);

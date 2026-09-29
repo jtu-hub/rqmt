@@ -106,7 +106,7 @@ void Range::unionEndIfInit(const TextLocation& other_end) {
     else
         end.line = other_end.line;
 
-    if(start.column >= 0)
+    if(end.column >= 0)
         end.column = std::max(end.column, other_end.column);
     else
         end.column = other_end.column;
@@ -152,6 +152,11 @@ value(value),
 range()
 {}
 
+RangeEntry::RangeEntry(int line_number, TextSpan text_span) :
+    value(text_span.value),
+    range(line_number, text_span.span.start, line_number, text_span.span.end)
+{}
+
 RangeEntry& RangeEntry::operator+=(const std::string& other)
 {
     value += other;
@@ -194,4 +199,97 @@ json Range::getLSPRangeAsJSON() const {
     };
 
     return out;
+}
+
+
+ColumnSpan::ColumnSpan() :
+    start(-1),
+    end(-1)
+{}
+
+ColumnSpan::ColumnSpan(int column_start, int column_end) :
+    start(column_start),
+    end(column_end)
+{}
+
+ColumnSpan& ColumnSpan::operator+=(const ColumnSpan& other)
+{
+    if (start >= 0)
+        start = std::min(start, other.start);
+    else
+        start = other.start;
+
+    if (end >= 0)
+        end = std::max(end, other.end);
+    else
+        end = other.end;
+
+    return *this;
+}
+
+
+TextSpan::TextSpan() :
+    value(),
+    span()
+{}
+
+TextSpan::TextSpan(std::string value) :
+    value(value),
+    span()
+{}
+
+TextSpan::TextSpan(std::string value, int column_start, int column_end) :
+    value(value),
+    span(column_start, column_end)
+{}
+
+TextSpan::TextSpan(std::string value, ColumnSpan span) :
+    value(value),
+    span(span)
+{}
+
+
+TextSpan TextSpan::fromTextWithColumnRange(const std::string& text_with_range) {
+    const auto p1 = text_with_range.rfind(':');
+
+    if (p1 == std::string_view::npos) m_error_unhandled();
+
+    const auto p2 = text_with_range.rfind(':', p1 - 1);
+
+    if (p2 == std::string_view::npos) m_error_unhandled();
+
+    int column_start;
+    int column_end;
+
+    if (!parseInt(text_with_range.substr(p2 + 1, p1 - p2 - 1), column_start)) {
+        m_error_unhandled();
+    }
+
+    if (!parseInt(text_with_range.substr(p1 + 1), column_end)) {
+        m_error_unhandled();
+    }
+
+    return TextSpan{text_with_range.substr(0, p2), ColumnSpan{column_start, column_end}};
+}
+
+
+TextSpan& TextSpan::operator+=(const std::string& other) {
+    value += other;
+
+    return *this;
+}
+
+
+TextSpan& TextSpan::operator+=(const ColumnSpan& other) {
+    span += other;
+
+    return *this;
+}
+
+
+TextSpan& TextSpan::operator+=(const TextSpan& other) {
+    value += other.value;
+    span += other.span;
+
+    return *this;
 }

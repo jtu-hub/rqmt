@@ -118,8 +118,8 @@ class AbstractSyntaxTree {
         SyntaxNode* getRootPointer() { return &root; };
         json getSemanticTokenData();
         void debugPrintTree();
-        void addReference(int line, const std::string& text_with_col_range);
-        void addAlias(int line_number, const std::string& text_with_col_range);
+        void addReference(int line, const TextSpan& text_with_col_range);
+        void addAlias(int line_number, const TextSpan& text_with_col_range);
         std::optional<const std::vector<RangeEntry>> getReferences(int line_number) const;
         std::optional<const Range> getAliasRange(std::string alias) const;
 };
