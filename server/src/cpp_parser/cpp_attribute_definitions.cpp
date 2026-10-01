@@ -82,16 +82,16 @@ namespace
             &addAssign<ColumnSpan, ColumnSpan>,
         }},
     }};
+}
 
-    std::ostream& operator<<(std::ostream& os, const AttributeValueVariant& value) {
-        std::visit(
-            [&os](const auto& v) {
-                os << v;
-            },
-            value);
+std::ostream& operator<<(std::ostream& os, const AttributeValueVariant& value) {
+    std::visit(
+        [&os](const auto& v) {
+            os << v;
+        },
+        value);
 
-        return os;
-    }
+    return os;
 }
 
 NodeAttribute::NodeAttribute(AttributeId id, AttributeValueVariant value) : 

@@ -27,6 +27,7 @@ SemanticTokenDefinition attributes[] = {
     {SemanticTokenId::attr_description, "description", SemanticTokens::meta, {SemanticTokenModifier::attr, SemanticTokenModifier::desc}   },
     {SemanticTokenId::attr_date,        "date",        SemanticTokens::meta, {SemanticTokenModifier::attr, SemanticTokenModifier::date}   },
     {SemanticTokenId::attr_type,        "type",        SemanticTokens::meta, {SemanticTokenModifier::attr, SemanticTokenModifier::type}   },
+    {SemanticTokenId::attr_tags,        "tags",        SemanticTokens::meta, {SemanticTokenModifier::attr, SemanticTokenModifier::tags}   },
 
     //...
 };
@@ -125,12 +126,14 @@ SyntaxNode& handleSequenceStart(SyntaxId& id, SyntaxNode& parent, const token_t&
 
     SemanticTokenDefinition* keyword = NULL;
 
-    bool is_token_attr = tokenIsAttribute(token, &keyword);  
-
-    if(is_token_attr || tokenIsKeyword(token, &keyword)) {
-        id = is_token_attr ? 
-            SyntaxId::attribute_def  : 
-            SyntaxId::requirement_def;
+    if(tokenIsAttribute(token, &keyword)) {
+        id = SyntaxId::attribute_def;
+    
+        SyntaxNode& child = parent.newChild();
+        
+        child = *keyword;
+    } else if( tokenIsKeyword(token, &keyword)) {
+        id = SyntaxId::requirement_def;
     
         SyntaxNode& child = parent.newChild();
         
@@ -689,23 +692,28 @@ void decodeInlineTitleAndDescription(bool* skip_get_token, bool* escape_next_tok
 void decodeAttribute(bool* skip_get_token, bool* escape_next_token, int* pos_in_seq, SyntaxId& id, SyntaxNode& parent, const token_t& token) {
     m_check_pointers(skip_get_token, escape_next_token, pos_in_seq);
     
+    SyntaxNode& attribute_node = parent.lastChild();
+    const AttributeId& attribute_id = getAttributeId(attribute_node.getDefinition().id);
+
     switch (*pos_in_seq)
     {
     case 0:
         //token.value = "title" | "description" | ...
 
-        parent = token;
+        attribute_node = token;
+        parent.addToLastAttributeOfTypeOrCreate(attribute_id, std::string(""));
+        
 
         (*pos_in_seq)++;
 
         return; //handled in c_parser.c  
     case 1:
         if(isTokenOfType(SyntaxElement::column, token)) {
-            (void)parent.newChildFromToken(token, col_attr);
+            (void)attribute_node.newChildFromToken(token, col_attr);
 
             (*pos_in_seq)++;
         } else {
-            parent.addDiagnostic(DiagnosticSeverity::error,
+            attribute_node.addDiagnostic(DiagnosticSeverity::error,
                                  DiagnosticId::unexpected_token,
                                  m_file_src, token.line, token.line, 
                                  token.column, token.column + 
@@ -724,7 +732,7 @@ void decodeAttribute(bool* skip_get_token, bool* escape_next_token, int* pos_in_
             //      See c_parser.c handleIndentation(...)
             //      Potential soultion, add child as description and retrieve 
             //      when adding description
-            SyntaxNode& child = parent.newChild();
+            SyntaxNode& child = attribute_node.newChild();
 
             
             child = token_t{
@@ -736,7 +744,7 @@ void decodeAttribute(bool* skip_get_token, bool* escape_next_token, int* pos_in_
             child = value;
 
             if(!isTokenOfType(SyntaxElement::new_line, token))
-                parent.addDiagnostic(DiagnosticSeverity::error,
+                attribute_node.addDiagnostic(DiagnosticSeverity::error,
                                      DiagnosticId::unexpected_token, 
                                      m_file_src, token.line, token.line, 
                                      token.column, token.column + 
@@ -745,10 +753,9 @@ void decodeAttribute(bool* skip_get_token, bool* escape_next_token, int* pos_in_
             id = SyntaxId::none;
             return;
         } else {           
-            (void)parent.newChildFromToken(token, value);
+            (void)attribute_node.newChildFromToken(token, value);
+            parent.addToLastAttributeOfTypeOrCreate(attribute_id, std::string(token.value));
             
-            // parent.addAttribute(AttributeId::text, token.value);
-
             (*pos_in_seq)++;
         }
 
@@ -757,7 +764,7 @@ void decodeAttribute(bool* skip_get_token, bool* escape_next_token, int* pos_in_
         //Value text like tokens
         if(!isTokenOfType(SyntaxElement::text_like, token)) {
             if(!isTokenOfType(SyntaxElement::new_line, token))
-                parent.addDiagnostic(DiagnosticSeverity::error,
+                attribute_node.addDiagnostic(DiagnosticSeverity::error,
                                      DiagnosticId::unexpected_token, 
                                      m_file_src, token.line, token.line, 
                                      token.column, token.column + 
@@ -766,16 +773,16 @@ void decodeAttribute(bool* skip_get_token, bool* escape_next_token, int* pos_in_
             id = SyntaxId::none;
             return;
         } else {
-            SyntaxNode& child = parent.lastChild();
-
+            SyntaxNode& child = attribute_node.lastChild();
             
             child.recomputeLength(token.column, token.char_count);
+            parent.addToLastAttributeOfTypeOrCreate(attribute_id, std::string(token.value));
         }
         return;
     default:
         id = SyntaxId::none;
 
-        parent.addDiagnostic(DiagnosticSeverity::error,
+        attribute_node.addDiagnostic(DiagnosticSeverity::error,
                              DiagnosticId::unexpected_token,
                              m_file_src, token.line, token.line, 
                              token.column, token.column + token.char_count);
@@ -878,6 +885,7 @@ void decodeRichText(bool* skip_get_token, bool* escape_next_token, int* pos_in_s
             SyntaxNode& child = parent.lastChild();
             
             child = token;
+            parent.addToLastAttributeOfTypeOrCreate(AttributeId::description_body, std::string(token.value));
             (*pos_in_seq)++;     
 
         }
@@ -931,8 +939,8 @@ void decodeRichText(bool* skip_get_token, bool* escape_next_token, int* pos_in_s
             
         } else if(isTokenOfType(SyntaxElement::text_like, token)) {
             SyntaxNode& child = parent.lastChild();
-
             
+            parent.addToLastAttributeOfTypeOrCreate(AttributeId::description_body, std::string(token.value));
             child.recomputeLength(token.column, token.char_count);
         } else {
             if(!isTokenOfType(SyntaxElement::new_line, token))
@@ -941,6 +949,8 @@ void decodeRichText(bool* skip_get_token, bool* escape_next_token, int* pos_in_s
                                      m_file_src, token.line, token.line, 
                                      token.column, token.column + 
                                      token.char_count);
+
+            parent.addToLastAttributeOfTypeOrCreate(AttributeId::description_body, std::string("\n"));
 
             id = SyntaxId::none;
         }
@@ -997,6 +1007,7 @@ void decodeRichText(bool* skip_get_token, bool* escape_next_token, int* pos_in_s
         } else if(isTokenOfType(SyntaxElement::text_like, token)) {
             
             SyntaxNode& child = parent.newChildFromToken(token, source);
+            parent.addToLastAttributeOfTypeOrCreate(AttributeId::description_body, std::string(token.value));
             
             (*pos_in_seq)--;
         } else {
@@ -1006,6 +1017,8 @@ void decodeRichText(bool* skip_get_token, bool* escape_next_token, int* pos_in_s
                                      m_file_src, token.line, token.line, 
                                      token.column, token.column + 
                                      token.char_count);
+
+            parent.addToLastAttributeOfTypeOrCreate(AttributeId::description_body, std::string("\n"));
 
             id = SyntaxId::none;
         }
@@ -1204,7 +1217,6 @@ void decodeInlineBlock(bool* skip_get_token, bool* escape_next_token, int* pos_i
     }
 }
 
-
 int getKeywordCount() {
     return sizeof(keywords) / sizeof(keywords[0]);
 }
@@ -1252,6 +1264,28 @@ bool tokenIsAttribute(token_t t, SemanticTokenDefinition** kw) {
     *kw = tokenInKeywords(attributes, getAttributeCount(), t);
 
     return *kw != NULL;
+}
+
+AttributeId getAttributeId(SemanticTokenId id) {
+    switch (id)
+    {
+    case SemanticTokenId::attr_author:
+        return AttributeId::author;
+    case SemanticTokenId::attr_date:
+        return AttributeId::date;
+    case SemanticTokenId::attr_tags:
+        return AttributeId::tags;
+    case SemanticTokenId::attr_type:
+        return AttributeId::type;
+    case SemanticTokenId::attr_title:
+        return AttributeId::title;
+    case SemanticTokenId::attr_description:
+        return AttributeId::description_body;
+    
+
+    default:
+        return AttributeId::invalid;
+    }
 }
 
 bool isTokenOfType(SyntaxElement type, token_t t) {

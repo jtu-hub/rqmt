@@ -56,6 +56,8 @@ bool tokenIsAttribute(token_t t, SemanticTokenDefinition** kw);
 
 bool isTokenOfType(SyntaxElement type, token_t t);
 
+AttributeId getAttributeId(SemanticTokenId id);
+
 SyntaxNode& handleSequenceStart(SyntaxId& id, SyntaxNode& parent, const token_t& token, int* indent_level);
 
 void decodeRequirement(bool* skip_get_token, bool* escape_next_token, int* pos_in_seq, SyntaxId& id, SyntaxNode& parent, const token_t& token, int* indent_level);

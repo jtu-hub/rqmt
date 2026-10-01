@@ -86,7 +86,7 @@ RqmtFile::RqmtFile(const std::string& uri, const std::string& input) : _uri(uri)
         // std::cerr << "\n";
 
         AbstractSyntaxTree line_ast = parseLine(tks, &indent_level, &indent_width, &indent_type);
-
+        line_ast.getRootPointer()->setLine(line_count);
         // std::cerr << "Computed line ast:\n";
         // line_ast.debugPrintTree();
 
@@ -94,7 +94,7 @@ RqmtFile::RqmtFile(const std::string& uri, const std::string& input) : _uri(uri)
         
         // std::cerr << "Merging new line:\n";
         merger.merge(ast, new_line.getAST(), new_line.getLineIndent());
-        // ast.debugPrintTree();
+        ast.debugPrintTree();
 
         // std::cerr << "Continue;\n\n";
     }

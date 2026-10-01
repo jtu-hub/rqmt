@@ -25,6 +25,8 @@ enum class DiagnosticId {
     shallow_indent_hint,
     missing_block_delimiter,
     wrong_ref_pattern,
+    multiple_values_for_attr,
+    attribute_child_of_attribute,
     
     count
 };

@@ -17,16 +17,16 @@ enum class AttributeId {
     /// START ATTRIBUTES ///////////////////////////////////////////////////////
 
     req_id,
-    req_id_range,
     alias,
-    alias_range,
     title,
     text,
     description,
+    description_body,
     author,
     date,
+    type,
+    tags,
     link,
-    link_range,
     ignore,
 
     /// END ATTRIBUTES /////////////////////////////////////////////////////////
@@ -56,6 +56,22 @@ public:
     NodeAttribute* asPointer() { return this; }
     NodeAttribute& asReference() { return *this; }
 
+    NodeAttribute& operator+=(NodeAttribute& other) {
+        if(this->id == other.id)
+            *this += other.value();
+        else
+            std::cerr << "Error when adding attributes of id " << (int)(this->id) << " with " << (int)(other.id) << std::endl;
+        return *this;
+    }
+
+    NodeAttribute& operator+=(const NodeAttribute& other) {
+        if(this->id == other.id)
+            *this += other.value();
+        else
+            std::cerr << "Error when adding attributes of id " << (int)(this->id) << " with " << (int)(other.id) << std::endl;
+        return *this;
+    }
+
     // Used when adding another AttributeValueVariant.
     NodeAttribute& operator+=(const AttributeValueVariant& other) {
         return addAssign(other);
@@ -69,6 +85,7 @@ public:
 
     template <typename T>
     const T& value() const { return std::get<T>(_value); }
+    const AttributeValueVariant& value() const { return _value; }
 
 private:
     AttributeValueVariant _value;

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <variant>
+#include <iostream>
 
 #define m_file_src getCodeSource(__FILE__, __LINE__)
 

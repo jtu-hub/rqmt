@@ -7,6 +7,7 @@ extern "C" {
 }
 
 #include "cpp_parser_util.h"
+#include "cpp_util.h"
 
 void SyntaxNode::addChild(SyntaxNode& child) {
     children.push_back(child);
@@ -209,7 +210,7 @@ void SyntaxNode::debugPrintSyntaxNode(int level) {
         for(auto& a : vec_a){
             for(int i = 0; i < level; i++) std::cerr << "    ";
 
-            std::cerr << "    > " << static_cast<int>(a.id) << ": " << a.value<std::string>() << "\n";
+            std::cerr << "    > " << static_cast<int>(a.id) << ": " << a.value() << "\n";
         }
     }
 
@@ -217,7 +218,7 @@ void SyntaxNode::debugPrintSyntaxNode(int level) {
     {       
         for(int i = 0; i < level; i++) std::cerr << "    ";
 
-        std::cerr << "    !> " << static_cast<int>(d.id) << "\n";
+        std::cerr << "    !> " << static_cast<int>(d.id) << " L: " << d.line_start << ":" << d.column_start << ":" << d.line_end << ":" << d.column_end <<"\n";
     }
 }
 
@@ -241,6 +242,80 @@ void SyntaxNode::roverrideDefinition(const SemanticTokenDefinition& new_definiti
     }
 
 }
+
+bool mergeAttributeValues(AttributeId id) {
+    //helper function to decide whether attributes shall be merged or 
+    //overwritten in SyntaxNode::copyAttributesTo TODO: decide where to place this function
+
+    switch (id)
+    {
+    case AttributeId::description_body:
+        return true;
+    default:
+        return false;
+    }
+}
+
+void SyntaxNode::copyAttributesTo(SyntaxNode& target, const int& line_number) const {
+    for (auto& [id, source_attributes] : attributes)
+    {
+        auto& target_attributes = target.attributes[id];
+
+        for (auto& source_attr : source_attributes)
+        {
+            if (target_attributes.empty())
+                target_attributes.push_back(source_attr);
+            else if (mergeAttributeValues(id))
+                target_attributes.front() += source_attr;
+            else {
+                int column_start = this->location.column;
+                int column_end   = column_start + this->length;
+
+                if(column_start < 0 && this->childCount() > 0) {
+                    column_start = this->getChildren().begin()->getColumn();
+                    column_end   = column_start + this->getChildren().begin()->getLength();
+                }
+
+                target.addDiagnostic(DiagnosticSeverity::error, 
+                                     DiagnosticId::multiple_values_for_attr, 
+                                     m_file_src, line_number, line_number, 
+                                     column_start, column_end);
+            }
+        }
+    }
+}
+
+void SyntaxNode::moveAttributesTo(SyntaxNode& target, const int& line_number) {
+    for (auto& [id, source_attributes] : attributes)
+    {
+        auto& target_attributes = target.attributes[id];
+
+        for (auto& source_attr : source_attributes)
+        {
+            if (target_attributes.empty())
+                target_attributes.push_back(std::move(source_attr));
+            else if (mergeAttributeValues(id))
+                target_attributes.front() += source_attr;
+            else {
+                int column_start = this->location.column;
+                int column_end   = column_start + this->length;
+
+                if(column_start < 0 && this->childCount() > 0) {
+                    column_start = this->getChildren().begin()->getColumn();
+                    column_end   = column_start + this->getChildren().begin()->getLength();
+                }
+
+                target.addDiagnostic(DiagnosticSeverity::error, 
+                                     DiagnosticId::multiple_values_for_attr, 
+                                     m_file_src, line_number, line_number, 
+                                     column_start, column_end);
+            }
+        }
+    }
+
+    attributes.clear();
+}
+
 
 void SyntaxNode::rgetDiagnosticLSPJSON(json& diagnostics_array) const {
     for(const auto& diagnostic : diagnostics) {

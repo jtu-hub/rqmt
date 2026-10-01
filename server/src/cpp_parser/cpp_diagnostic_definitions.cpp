@@ -40,6 +40,12 @@ const DiagnosticMessageArray diagnostic_msgs = [] {
     arr[static_cast<std::size_t>(DiagnosticId::wrong_ref_pattern)] =
         "Invalid reference format: references must start with '{', end with '}', and contain only alphanumeric characters or '.'.";
     
+    arr[static_cast<std::size_t>(DiagnosticId::multiple_values_for_attr)] =
+        "Redefinition of a previously defined attribute";
+    
+    arr[static_cast<std::size_t>(DiagnosticId::attribute_child_of_attribute)] =
+        "An attribute is being defined as child of another attribute";
+        
     return arr;
 }();
 

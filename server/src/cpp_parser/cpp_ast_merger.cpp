@@ -22,9 +22,10 @@ void ASTMerger::merge(AbstractSyntaxTree& destination, const AbstractSyntaxTree&
     //SyntaxNode* getValidParent(AbstractSyntaxTree& destination, int origin_indent_level)
     int found_at_level = -1;
 
-    SyntaxNode* parent = destination.lastChildAtLevel(origin_indent_level, &found_at_level).asPointer();
+    SyntaxNode* parent      = destination.lastChildAtLevel(origin_indent_level, &found_at_level).asPointer();
+    SyntaxNode* grandparent = destination.lastChildAtLevel(origin_indent_level - 1, &found_at_level).asPointer();
 
-    m_check_pointer(parent);
+    m_check_pointers(parent, grandparent);
 
     if(m_st_is_other(parent->getDefinition().id) || (parent == destination.getRootPointer()  && found_at_level > 0)) {
         
@@ -32,19 +33,38 @@ void ASTMerger::merge(AbstractSyntaxTree& destination, const AbstractSyntaxTree&
         // std::cerr << "I: " << i <<"; Found at level: " << found_at_level << "; Is other semantic token: " << (m_st_is_other(parent->getDefinition().id) ? "True" : "False") << "; Is Root: " << (parent == destination.getRootPointer() ? "True" : "False") << std::endl;
         while ((m_st_is_other(parent->getDefinition().id) || (parent == destination.getRootPointer()  && found_at_level > 0)) && origin_indent_level - i >= 0)
         {
-            parent = destination.lastChildAtLevel(origin_indent_level - i, &found_at_level).asPointer();
+            parent      = destination.lastChildAtLevel(origin_indent_level - i, &found_at_level).asPointer();
+            grandparent = destination.lastChildAtLevel(origin_indent_level - i - 1, &found_at_level).asPointer();
 
-            m_check_pointer(parent);
+            m_check_pointers(parent, grandparent);
 
             i++;
             // std::cerr << "I: " << i <<"; Found at level: " << found_at_level << "; Is other semantic token: " << (m_st_is_other(parent->getDefinition().id) ? "True" : "False") << "; Is Root: " << (parent == destination.getRootPointer() ? "True" : "False") << std::endl;
         }        
     }
 
+    SemanticTokenId parent_id      = parent->getDefinition().id,
+                    grandparent_id = grandparent->getDefinition().id;
+
+    // Copy attributes set to the root of the line ast to the parent node
+    SyntaxNode* copy_target = parent;
+    if(m_st_is_attribute(parent_id) && (m_st_is_keyword(grandparent_id) || m_st_is_root(grandparent_id))) {
+        copy_target = grandparent;
+    } else if(m_st_is_attribute(parent_id)) {
+        parent->addDiagnostic(DiagnosticSeverity::error, DiagnosticId::attribute_child_of_attribute, m_diag_src, 
+                              parent->getLine(), parent->getLine(), 
+                              parent->getColumn(), parent->getColumn() + parent->getLength());
+    }
+
+    if(line_number >= 0) {
+        origin.getRoot().copyAttributesTo(copy_target->asReference(), line_number);
+    } else {
+        origin.getRoot().copyAttributesTo(copy_target->asReference(), origin.getRoot().getLine());
+    }
+
     //TODO: define proper helper functions again <3
     for(SyntaxNode child : origin.getRoot().getChildren()) {
-        SemanticTokenId child_id  = child.getDefinition().id,
-                        parent_id = parent->getDefinition().id;
+        SemanticTokenId child_id  = child.getDefinition().id;
 
         //update line number if required
         if(line_number >= 0) {
@@ -105,6 +125,14 @@ void ASTMerger::merge(AbstractSyntaxTree& destination, const AbstractSyntaxTree&
 
             for(NodeAttribute al : als) 
                 if(al.valid) destination.addAlias(child.getLine(), al.value<TextSpan>());
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// HANDLE HIERARCHY  DIAGNOSTICS //////////////////////////////////////////////////////////////////////////////
+        if(m_st_is_attribute(parent_id) && m_st_is_attribute(child_id)) {
+            parent->addDiagnostic(DiagnosticSeverity::error, DiagnosticId::attribute_child_of_attribute, m_diag_src, 
+                                  child.getLine(), child.getLine(), 
+                                  child.getColumn(), child.getColumn() + child.getLength());
         }
 
         parent->addChild(child);

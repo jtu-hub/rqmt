@@ -81,6 +81,7 @@ class SyntaxNode {
         size_t childCount() const { return children.size(); };
         const SemanticTokenDefinition& getDefinition() const { return definition; };
         int getLine() const { return location.line; };
+        void setLine(const int& line_number) { location.line = line_number; };
         void recursiveSetLine(int line_number);
         int getColumn() const { return location.column; };
         int getLength() const { return length; };
@@ -95,6 +96,8 @@ class SyntaxNode {
         void rdebugPrintSyntaxNode(int level);
         void overrideDefinition(const SemanticTokenDefinition& new_definition);
         void roverrideDefinition(const SemanticTokenDefinition& new_definition);
+        void copyAttributesTo(SyntaxNode& target, const int& line_number) const;
+        void moveAttributesTo(SyntaxNode& target, const int& line_number);
         json getDiagnosticLSPJSON() const;
         void rgetDiagnosticLSPJSON(json& array) const;
 };

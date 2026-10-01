@@ -36,6 +36,7 @@ enum class SemanticTokenModifier {
     desc,
     date,
     type,
+    tags,
     id,
     unquoted,
     backtick,
@@ -85,6 +86,7 @@ enum class SemanticTokenId {
     attr_title,
     attr_description,
     attr_type,
+    attr_tags,
 
     // ...
     ////////////////////////////////////////////////////////////////////////////
@@ -144,6 +146,7 @@ enum class SemanticTokenId {
 #define m_st_is_attribute(id) (SemanticTokenId::def_attr_start   <= (id) && (id) < SemanticTokenId::def_attr_end   )
 #define m_st_is_scope(id)     (SemanticTokenId::def_scopes_start <= (id) && (id) < SemanticTokenId::def_scopes_end )
 #define m_st_is_other(id)     (SemanticTokenId::def_other_start  <= (id) && (id) < SemanticTokenId::def_other_end  )
+#define m_st_is_root(id)      (SemanticTokenId::root  == (id))
 
 
 using STDModifierArray    = std::array<SemanticTokenModifier, k_max_number_modifiers>;
