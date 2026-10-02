@@ -89,6 +89,16 @@
       "editor.semanticTokenColorCustomizations": {
         "enabled": true,
         "rules": {
+          "keyword.tag:rqmt": {
+            "foreground": "#46bd92",
+            "underline": false,
+            "bold": true
+          },
+          "keyword.def:rqmt": {
+            "foreground": "#5FA2D9",
+            "bold": true,
+            "underline": true
+          },
           "keyword.req:rqmt": {
             "foreground": "#CCB350",
             "bold": true
@@ -148,16 +158,46 @@
             "foreground": "#ebcedd",
             "bold": true
           },
+          "punctuation.brace.reference": {
+            "foreground": "#ebcedd",
+            "bold": true
+          },
           "punctuation.brace.alias": {
             "foreground": "#CCB350",
+            "bold": true
+          },
+          "punctuation.brace.alias.def": {
+            "foreground": "#5FA2D9",
+            "bold": true
+          },
+          "punctuation.brace.alias.tag": {
+            "foreground": "#46bd92",
             "bold": true
           },
           "source.id": {
             "foreground": "#CCB350",
             "bold": true
           },
+          "source.id.def": {
+            "foreground": "#5FA2D9",
+            "bold": true,
+            "underline": true
+          },
+          "source.id.tag": {
+            "foreground": "#46bd92",
+            "bold": true
+          },
           "punctuation.id": {
             "foreground": "#CCB350",
+            "bold": true
+          },
+          "punctuation.id.def": {
+            "foreground": "#5FA2D9",
+            "bold": true,
+            "underline": true
+          },
+          "punctuation.id.tag": {
+            "foreground": "#46bd92",
             "bold": true
           },
           "string.unquoted:rqmt": {

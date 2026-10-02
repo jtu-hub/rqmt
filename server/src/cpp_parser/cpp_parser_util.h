@@ -100,6 +100,7 @@ class SyntaxNode {
         void moveAttributesTo(SyntaxNode& target, const int& line_number);
         json getDiagnosticLSPJSON() const;
         void rgetDiagnosticLSPJSON(json& array) const;
+        void addModifiers(STDModifierArray modifiers);
 };
 
 class AbstractSyntaxTree {

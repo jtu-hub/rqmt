@@ -10,6 +10,22 @@ to structure this file.
 `vsce publish major` for substantial changes 
 
 ## [Unreleased]
+### Added:
+- Removed attribute keyword:
+  - description
+  - title
+  - type
+- Added attribute keyword:
+  - test
+- Added keywords:
+  - tag
+  - def
+### TODO
+- add diagnostic for attributes defined twice for the same element
+- path resolution
+- generic reference link
+- hover info for links
+-
 
 ## [0.0.1] - 2026-06-17
 ### Added:

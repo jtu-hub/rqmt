@@ -17,6 +17,8 @@ SemanticTokenDefinition keywords[] = {
     {SemanticTokenId::kw_nfr, "nfr", SemanticTokens::keyword, {SemanticTokenModifier::nfr}},
     {SemanticTokenId::kw_ur,  "ur",  SemanticTokens::keyword, {SemanticTokenModifier::ur} },
     {SemanticTokenId::kw_sr,  "sr",  SemanticTokens::keyword, {SemanticTokenModifier::sr} },
+    {SemanticTokenId::kw_def, "def", SemanticTokens::keyword, {SemanticTokenModifier::def}},
+    {SemanticTokenId::kw_tag, "tag", SemanticTokens::keyword, {SemanticTokenModifier::tag}},
     
     //...
 };
@@ -170,6 +172,8 @@ void decodeRequirement(bool* skip_get_token, bool* escape_next_token, int* pos_i
             child = token;
             child = id_delim;
 
+            child.addModifiers(parent.getDefinition().modifiers);
+
             (*pos_in_seq)++;
         } else if(isTokenOfType(SyntaxElement::brace_ref_o, token)) {
             //Here a name attribute is being set implicitly, change to relevant
@@ -218,6 +222,8 @@ void decodeRequirement(bool* skip_get_token, bool* escape_next_token, int* pos_i
             
             child = token;
             child = id_number;
+
+            child.addModifiers(parent.getDefinition().modifiers);
 
             parent.addAttribute(
                 AttributeId::req_id, 
@@ -273,6 +279,8 @@ void decodeInlineReferenceName(bool* skip_get_token, bool* escape_next_token, in
             child = token;
             child = alias_b;
 
+            child.addModifiers(parent.getDefinition().modifiers);
+            
             (*pos_in_seq)++;
         }
 
@@ -332,6 +340,8 @@ void decodeInlineReferenceName(bool* skip_get_token, bool* escape_next_token, in
 
             closing_brace = token;
             closing_brace = alias_b;
+
+            closing_brace.addModifiers(parent.getDefinition().modifiers);
             
             (*pos_in_seq)++; 
         }
@@ -347,6 +357,8 @@ void decodeInlineReferenceName(bool* skip_get_token, bool* escape_next_token, in
             
             child = token;
             child = id_delim;
+
+            child.addModifiers(parent.getDefinition().modifiers);
 
             *pos_in_seq = 2;
 

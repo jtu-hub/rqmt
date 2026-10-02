@@ -94,7 +94,7 @@ RqmtFile::RqmtFile(const std::string& uri, const std::string& input) : _uri(uri)
         
         // std::cerr << "Merging new line:\n";
         merger.merge(ast, new_line.getAST(), new_line.getLineIndent());
-        ast.debugPrintTree();
+        // ast.debugPrintTree();
 
         // std::cerr << "Continue;\n\n";
     }

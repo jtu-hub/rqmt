@@ -327,7 +327,6 @@ void SyntaxNode::moveAttributesTo(SyntaxNode& target, const int& line_number) {
     attributes.clear();
 }
 
-
 void SyntaxNode::rgetDiagnosticLSPJSON(json& diagnostics_array) const {
     for(const auto& diagnostic : diagnostics) {
         diagnostics_array.push_back(diagnostic.toLSPJson());
@@ -344,6 +343,23 @@ json SyntaxNode::getDiagnosticLSPJSON() const {
     rgetDiagnosticLSPJSON(diagnostics_array);
 
     return diagnostics_array;
+}
+
+void SyntaxNode::addModifiers(STDModifierArray modifiers) {
+    int i = 0;
+    while(definition.modifiers[i] != SemanticTokenModifier::none && i < k_max_number_modifiers) {
+        i++;
+    }
+
+    std::cerr << "Number of set modifiers: " << i << " / " << k_max_number_modifiers << "\n";
+
+    int j = 0;
+    while(modifiers[j] != SemanticTokenModifier::none && i + j < k_max_number_modifiers) {
+        definition.modifiers[i + j] = modifiers[j];
+
+        j++;
+    }
+    std::cerr << "Number of added modifiers: " << j << " -> total " << i+j << " / " << k_max_number_modifiers << "\n";
 }
 
 void AbstractSyntaxTree::debugPrintTree() {

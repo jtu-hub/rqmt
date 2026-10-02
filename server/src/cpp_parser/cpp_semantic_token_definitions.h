@@ -29,6 +29,8 @@ enum class SemanticTokenModifier {
     nfr,
     ur,
     sr,
+    def,
+    tag,
     attr,
     author,
     title,
@@ -71,6 +73,8 @@ enum class SemanticTokenId {
     kw_nfr,
     kw_sr,
     kw_ur,
+    kw_def,
+    kw_tag,
 
     // ...
     ////////////////////////////////////////////////////////////////////////////
