@@ -96,7 +96,7 @@ class SyntaxNode {
         void rdebugPrintSyntaxNode(int level);
         void overrideDefinition(const SemanticTokenDefinition& new_definition);
         void roverrideDefinition(const SemanticTokenDefinition& new_definition);
-        void copyAttributesTo(SyntaxNode& target, const int& line_number) const;
+        void copyAttributesTo(SyntaxNode& target, const int& line_number, const AttributeId& text_override_id) const;
         void moveAttributesTo(SyntaxNode& target, const int& line_number);
         json getDiagnosticLSPJSON() const;
         void rgetDiagnosticLSPJSON(json& array) const;

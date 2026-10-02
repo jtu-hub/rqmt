@@ -27,6 +27,7 @@ enum class DiagnosticId {
     wrong_ref_pattern,
     multiple_values_for_attr,
     attribute_child_of_attribute,
+    multiline_not_allowed,
     
     count
 };

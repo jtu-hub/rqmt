@@ -16,17 +16,23 @@ enum class AttributeId {
     ////////////////////////////////////////////////////////////////////////////
     /// START ATTRIBUTES ///////////////////////////////////////////////////////
 
+    //implicitly declared via syntax elements
     req_id,
     alias,
     title,
-    text,
     description,
     description_body,
-    author,
-    date,
+    text,
     type,
     tags,
     link,
+
+    //explicitly declared via attribute keyword
+    author,
+    date,
+    test,
+
+    //utility attributes for AST merging purposes
     ignore,
 
     /// END ATTRIBUTES /////////////////////////////////////////////////////////

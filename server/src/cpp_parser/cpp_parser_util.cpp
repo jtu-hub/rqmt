@@ -250,23 +250,26 @@ bool mergeAttributeValues(AttributeId id) {
     switch (id)
     {
     case AttributeId::description_body:
+    case AttributeId::author:
         return true;
     default:
         return false;
     }
 }
 
-void SyntaxNode::copyAttributesTo(SyntaxNode& target, const int& line_number) const {
+void SyntaxNode::copyAttributesTo(SyntaxNode& target, const int& line_number, const AttributeId& text_override_id) const {
     for (auto& [id, source_attributes] : attributes)
     {
-        auto& target_attributes = target.attributes[id];
+        AttributeId target_id = id == AttributeId::text ? text_override_id : id;
+
+        auto& target_attributes = target.attributes[target_id];
 
         for (auto& source_attr : source_attributes)
         {
             if (target_attributes.empty())
-                target_attributes.push_back(source_attr);
-            else if (mergeAttributeValues(id))
-                target_attributes.front() += source_attr;
+                target_attributes.emplace_back(target_id, source_attr.value());
+            else if (mergeAttributeValues(target_id))
+                target_attributes.front() += source_attr.value();
             else {
                 int column_start = this->location.column;
                 int column_end   = column_start + this->length;
@@ -276,10 +279,18 @@ void SyntaxNode::copyAttributesTo(SyntaxNode& target, const int& line_number) co
                     column_end   = column_start + this->getChildren().begin()->getLength();
                 }
 
-                target.addDiagnostic(DiagnosticSeverity::error, 
-                                     DiagnosticId::multiple_values_for_attr, 
-                                     m_file_src, line_number, line_number, 
-                                     column_start, column_end);
+                if(id == AttributeId::text) {
+                    target.addDiagnostic(DiagnosticSeverity::error, 
+                        DiagnosticId::multiline_not_allowed, 
+                        m_file_src, line_number, line_number, 
+                        column_start, column_end);
+
+                } else {
+                    target.addDiagnostic(DiagnosticSeverity::error, 
+                        DiagnosticId::multiple_values_for_attr, 
+                        m_file_src, line_number, line_number, 
+                        column_start, column_end);
+                }
             }
         }
     }

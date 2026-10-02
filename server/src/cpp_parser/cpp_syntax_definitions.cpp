@@ -23,40 +23,37 @@ SemanticTokenDefinition keywords[] = {
 
 SemanticTokenDefinition attributes[] = {
     {SemanticTokenId::attr_author,      "author",      SemanticTokens::meta, {SemanticTokenModifier::attr, SemanticTokenModifier::author} },
-    {SemanticTokenId::attr_title,       "title",       SemanticTokens::meta, {SemanticTokenModifier::attr, SemanticTokenModifier::title}  },
-    {SemanticTokenId::attr_description, "description", SemanticTokens::meta, {SemanticTokenModifier::attr, SemanticTokenModifier::desc}   },
     {SemanticTokenId::attr_date,        "date",        SemanticTokens::meta, {SemanticTokenModifier::attr, SemanticTokenModifier::date}   },
-    {SemanticTokenId::attr_type,        "type",        SemanticTokens::meta, {SemanticTokenModifier::attr, SemanticTokenModifier::type}   },
-    {SemanticTokenId::attr_tags,        "tags",        SemanticTokens::meta, {SemanticTokenModifier::attr, SemanticTokenModifier::tags}   },
+    {SemanticTokenId::attr_test,        "test",        SemanticTokens::meta, {SemanticTokenModifier::attr, SemanticTokenModifier::test}   },
 
     //...
 };
 
-SemanticTokenDefinition value_body      = {SemanticTokenId::value_body,         "value.body",             SemanticTokens::string,      {SemanticTokenModifier::unquoted, SemanticTokenModifier::none}                                                  };
-SemanticTokenDefinition value           = {SemanticTokenId::value,              "value",                  SemanticTokens::string,      {SemanticTokenModifier::unquoted, SemanticTokenModifier::none}                                                  };
-SemanticTokenDefinition str_math        = {SemanticTokenId::math_multiline,     "math.multiline",         SemanticTokens::string,      {SemanticTokenModifier::math, SemanticTokenModifier::multiline, SemanticTokenModifier::none}                          };
-SemanticTokenDefinition str_blck        = {SemanticTokenId::backtick_multiline, "backtick.multiline",     SemanticTokens::string,      {SemanticTokenModifier::backtick, SemanticTokenModifier::multiline, SemanticTokenModifier::none}                      };
-SemanticTokenDefinition str_math_inline = {SemanticTokenId::math_inline,        "math.inline",            SemanticTokens::string,      {SemanticTokenModifier::math, SemanticTokenModifier::inline_token, SemanticTokenModifier::none}                             };
-SemanticTokenDefinition str_blck_inline = {SemanticTokenId::backtick_inline,    "backtick.inline",        SemanticTokens::string,      {SemanticTokenModifier::backtick, SemanticTokenModifier::inline_token, SemanticTokenModifier::none}                         };
-SemanticTokenDefinition desc_body       = {SemanticTokenId::description_body,   "description.body",       SemanticTokens::meta,        {SemanticTokenModifier::desc, SemanticTokenModifier::none}                                                      };
-SemanticTokenDefinition desc            = {SemanticTokenId::description,        "description",            SemanticTokens::meta,        {SemanticTokenModifier::desc, SemanticTokenModifier::none}                                                      };
-SemanticTokenDefinition title           = {SemanticTokenId::title,              "title",                  SemanticTokens::meta,        {SemanticTokenModifier::title, SemanticTokenModifier::none}                                                     };
-SemanticTokenDefinition col_attr        = {SemanticTokenId::column_attr,        "column.attr",            SemanticTokens::punctuation, {SemanticTokenModifier::separator, SemanticTokenModifier::colon,  SemanticTokenModifier::attr, SemanticTokenModifier::none} };
+SemanticTokenDefinition value_body      = {SemanticTokenId::value_body,         "value.body",             SemanticTokens::string,      {SemanticTokenModifier::unquoted, SemanticTokenModifier::none}};
+SemanticTokenDefinition value           = {SemanticTokenId::value,              "value",                  SemanticTokens::string,      {SemanticTokenModifier::unquoted, SemanticTokenModifier::none}};
+SemanticTokenDefinition str_math        = {SemanticTokenId::math_multiline,     "math.multiline",         SemanticTokens::string,      {SemanticTokenModifier::math, SemanticTokenModifier::multiline, SemanticTokenModifier::none}};
+SemanticTokenDefinition str_blck        = {SemanticTokenId::backtick_multiline, "backtick.multiline",     SemanticTokens::string,      {SemanticTokenModifier::backtick, SemanticTokenModifier::multiline, SemanticTokenModifier::none}};
+SemanticTokenDefinition str_math_inline = {SemanticTokenId::math_inline,        "math.inline",            SemanticTokens::string,      {SemanticTokenModifier::math, SemanticTokenModifier::inline_token, SemanticTokenModifier::none}};
+SemanticTokenDefinition str_blck_inline = {SemanticTokenId::backtick_inline,    "backtick.inline",        SemanticTokens::string,      {SemanticTokenModifier::backtick, SemanticTokenModifier::inline_token, SemanticTokenModifier::none}};
+SemanticTokenDefinition desc_body       = {SemanticTokenId::description_body,   "description.body",       SemanticTokens::meta,        {SemanticTokenModifier::desc, SemanticTokenModifier::none}};
+SemanticTokenDefinition desc            = {SemanticTokenId::description,        "description",            SemanticTokens::meta,        {SemanticTokenModifier::desc, SemanticTokenModifier::none}};
+SemanticTokenDefinition title           = {SemanticTokenId::title,              "title",                  SemanticTokens::meta,        {SemanticTokenModifier::title, SemanticTokenModifier::none}};
+SemanticTokenDefinition col_attr        = {SemanticTokenId::column_attr,        "column.attr",            SemanticTokens::punctuation, {SemanticTokenModifier::separator, SemanticTokenModifier::colon,  SemanticTokenModifier::attr, SemanticTokenModifier::none}};
 SemanticTokenDefinition col_title       = {SemanticTokenId::column_title,       "column.title",           SemanticTokens::punctuation, {SemanticTokenModifier::separator, SemanticTokenModifier::colon,  SemanticTokenModifier::title, SemanticTokenModifier::none}};
-SemanticTokenDefinition source          = {SemanticTokenId::source_body,        "source.body",            SemanticTokens::source,      {SemanticTokenModifier::none}                                                                             };
-SemanticTokenDefinition alias_b         = {SemanticTokenId::alias_brace,        "alias.brace",            SemanticTokens::punctuation, {SemanticTokenModifier::brace, SemanticTokenModifier::alias, SemanticTokenModifier::none}                             };
-SemanticTokenDefinition alias_v         = {SemanticTokenId::alias_value,        "alias.value",            SemanticTokens::meta,        {SemanticTokenModifier::alias, SemanticTokenModifier::none}                                                     };
-SemanticTokenDefinition ref_brace       = {SemanticTokenId::reference_brace,    "reference.brace",        SemanticTokens::punctuation, {SemanticTokenModifier::brace, SemanticTokenModifier::reference, SemanticTokenModifier::none}                         };
-SemanticTokenDefinition ref_delim       = {SemanticTokenId::reference_delim,    "reference.delim",        SemanticTokens::punctuation, {SemanticTokenModifier::delimiter, SemanticTokenModifier::reference, SemanticTokenModifier::none}                     };
-SemanticTokenDefinition ref_value       = {SemanticTokenId::reference_value,    "reference.value",        SemanticTokens::meta,        {SemanticTokenModifier::reference, SemanticTokenModifier::none}                                                 };
-SemanticTokenDefinition id_delim        = {SemanticTokenId::id_delim,           "id.delim",               SemanticTokens::punctuation, {SemanticTokenModifier::delimiter, SemanticTokenModifier::id, SemanticTokenModifier::none}                            };
-SemanticTokenDefinition id_number       = {SemanticTokenId::id_number,          "id.number",              SemanticTokens::source,      {SemanticTokenModifier::id, SemanticTokenModifier::none}                                                        };
-SemanticTokenDefinition blck_delim      = {SemanticTokenId::block_delim,        "block.delim",            SemanticTokens::punctuation, {SemanticTokenModifier::block, SemanticTokenModifier::delimiter, SemanticTokenModifier::none}                         };
-SemanticTokenDefinition math_delim      = {SemanticTokenId::math_delim,         "math.delim",             SemanticTokens::punctuation, {SemanticTokenModifier::math, SemanticTokenModifier::delimiter, SemanticTokenModifier::none}                          };
-SemanticTokenDefinition blck_delim_ml   = {SemanticTokenId::block_delim_ml,     "block.delim.multiline",  SemanticTokens::punctuation, {SemanticTokenModifier::block, SemanticTokenModifier::delimiter, SemanticTokenModifier::multiline, SemanticTokenModifier::none}                         };
-SemanticTokenDefinition math_delim_ml   = {SemanticTokenId::math_delim_ml,      "math.delim.multiline",   SemanticTokens::punctuation, {SemanticTokenModifier::math, SemanticTokenModifier::delimiter, SemanticTokenModifier::multiline, SemanticTokenModifier::none}                          };
-SemanticTokenDefinition delim_sp        = {SemanticTokenId::space,              "space.delim",            SemanticTokens::space,       {SemanticTokenModifier::delimiter, SemanticTokenModifier::none}                          };
-SemanticTokenDefinition multiline_scope = {SemanticTokenId::multiline_scope,    "meta.multiline",         SemanticTokens::meta,        {SemanticTokenModifier::multiline, SemanticTokenModifier::none}                          };
+SemanticTokenDefinition source          = {SemanticTokenId::source_body,        "source.body",            SemanticTokens::source,      {SemanticTokenModifier::none}};
+SemanticTokenDefinition alias_b         = {SemanticTokenId::alias_brace,        "alias.brace",            SemanticTokens::punctuation, {SemanticTokenModifier::brace, SemanticTokenModifier::alias, SemanticTokenModifier::none}};
+SemanticTokenDefinition alias_v         = {SemanticTokenId::alias_value,        "alias.value",            SemanticTokens::meta,        {SemanticTokenModifier::alias, SemanticTokenModifier::none}};
+SemanticTokenDefinition ref_brace       = {SemanticTokenId::reference_brace,    "reference.brace",        SemanticTokens::punctuation, {SemanticTokenModifier::brace, SemanticTokenModifier::reference, SemanticTokenModifier::none}};
+SemanticTokenDefinition ref_delim       = {SemanticTokenId::reference_delim,    "reference.delim",        SemanticTokens::punctuation, {SemanticTokenModifier::delimiter, SemanticTokenModifier::reference, SemanticTokenModifier::none}};
+SemanticTokenDefinition ref_value       = {SemanticTokenId::reference_value,    "reference.value",        SemanticTokens::meta,        {SemanticTokenModifier::reference, SemanticTokenModifier::none}};
+SemanticTokenDefinition id_delim        = {SemanticTokenId::id_delim,           "id.delim",               SemanticTokens::punctuation, {SemanticTokenModifier::delimiter, SemanticTokenModifier::id, SemanticTokenModifier::none}};
+SemanticTokenDefinition id_number       = {SemanticTokenId::id_number,          "id.number",              SemanticTokens::source,      {SemanticTokenModifier::id, SemanticTokenModifier::none}};
+SemanticTokenDefinition blck_delim      = {SemanticTokenId::block_delim,        "block.delim",            SemanticTokens::punctuation, {SemanticTokenModifier::block, SemanticTokenModifier::delimiter, SemanticTokenModifier::none}};
+SemanticTokenDefinition math_delim      = {SemanticTokenId::math_delim,         "math.delim",             SemanticTokens::punctuation, {SemanticTokenModifier::math, SemanticTokenModifier::delimiter, SemanticTokenModifier::none}};
+SemanticTokenDefinition blck_delim_ml   = {SemanticTokenId::block_delim_ml,     "block.delim.multiline",  SemanticTokens::punctuation, {SemanticTokenModifier::block, SemanticTokenModifier::delimiter, SemanticTokenModifier::multiline, SemanticTokenModifier::none}};
+SemanticTokenDefinition math_delim_ml   = {SemanticTokenId::math_delim_ml,      "math.delim.multiline",   SemanticTokens::punctuation, {SemanticTokenModifier::math, SemanticTokenModifier::delimiter, SemanticTokenModifier::multiline, SemanticTokenModifier::none}};
+SemanticTokenDefinition delim_sp        = {SemanticTokenId::space,              "space.delim",            SemanticTokens::space,       {SemanticTokenModifier::delimiter, SemanticTokenModifier::none}};
+SemanticTokenDefinition multiline_scope = {SemanticTokenId::multiline_scope,    "meta.multiline",         SemanticTokens::meta,        {SemanticTokenModifier::multiline, SemanticTokenModifier::none}};
 
 
 SemanticTokenDefinition& getValueBodyDefinition() {
@@ -700,9 +697,7 @@ void decodeAttribute(bool* skip_get_token, bool* escape_next_token, int* pos_in_
     case 0:
         //token.value = "title" | "description" | ...
 
-        attribute_node = token;
-        parent.addToLastAttributeOfTypeOrCreate(attribute_id, std::string(""));
-        
+        attribute_node = token;        
 
         (*pos_in_seq)++;
 
@@ -724,6 +719,23 @@ void decodeAttribute(bool* skip_get_token, bool* escape_next_token, int* pos_in_
 
         return;
     case 2:
+        if(isTokenOfType(SyntaxElement::space, token)) {
+            (*pos_in_seq)++;
+
+            //TODO: branch off here to decode data, test link or others
+        } else {
+            if(!isTokenOfType(SyntaxElement::new_line, token))
+                attribute_node.addDiagnostic(DiagnosticSeverity::error,
+                                             DiagnosticId::unexpected_token,
+                                             m_file_src, token.line, token.line, 
+                                             token.column, token.column + 
+                                             token.char_count);
+
+            id = SyntaxId::none;
+        }
+
+        return;
+    case 3:
         //Value text like tokens
         if(!isTokenOfType(SyntaxElement::text_like, token)) {
             //TODO: quick fix: add an empty child to not raise the unexpected 
@@ -755,12 +767,12 @@ void decodeAttribute(bool* skip_get_token, bool* escape_next_token, int* pos_in_
         } else {           
             (void)attribute_node.newChildFromToken(token, value);
             parent.addToLastAttributeOfTypeOrCreate(attribute_id, std::string(token.value));
-            
+                        
             (*pos_in_seq)++;
         }
 
         return;
-    case 3:
+    case 4:
         //Value text like tokens
         if(!isTokenOfType(SyntaxElement::text_like, token)) {
             if(!isTokenOfType(SyntaxElement::new_line, token))
@@ -885,7 +897,7 @@ void decodeRichText(bool* skip_get_token, bool* escape_next_token, int* pos_in_s
             SyntaxNode& child = parent.lastChild();
             
             child = token;
-            parent.addToLastAttributeOfTypeOrCreate(AttributeId::description_body, std::string(token.value));
+            parent.addToLastAttributeOfTypeOrCreate(AttributeId::text, std::string(token.value));
             (*pos_in_seq)++;     
 
         }
@@ -940,7 +952,7 @@ void decodeRichText(bool* skip_get_token, bool* escape_next_token, int* pos_in_s
         } else if(isTokenOfType(SyntaxElement::text_like, token)) {
             SyntaxNode& child = parent.lastChild();
             
-            parent.addToLastAttributeOfTypeOrCreate(AttributeId::description_body, std::string(token.value));
+            parent.addToLastAttributeOfTypeOrCreate(AttributeId::text, std::string(token.value));
             child.recomputeLength(token.column, token.char_count);
         } else {
             if(!isTokenOfType(SyntaxElement::new_line, token))
@@ -950,7 +962,7 @@ void decodeRichText(bool* skip_get_token, bool* escape_next_token, int* pos_in_s
                                      token.column, token.column + 
                                      token.char_count);
 
-            parent.addToLastAttributeOfTypeOrCreate(AttributeId::description_body, std::string("\n"));
+            parent.addToLastAttributeOfTypeOrCreate(AttributeId::text, std::string("\n"));
 
             id = SyntaxId::none;
         }
@@ -1007,7 +1019,7 @@ void decodeRichText(bool* skip_get_token, bool* escape_next_token, int* pos_in_s
         } else if(isTokenOfType(SyntaxElement::text_like, token)) {
             
             SyntaxNode& child = parent.newChildFromToken(token, source);
-            parent.addToLastAttributeOfTypeOrCreate(AttributeId::description_body, std::string(token.value));
+            parent.addToLastAttributeOfTypeOrCreate(AttributeId::text, std::string(token.value));
             
             (*pos_in_seq)--;
         } else {
@@ -1018,7 +1030,7 @@ void decodeRichText(bool* skip_get_token, bool* escape_next_token, int* pos_in_s
                                      token.column, token.column + 
                                      token.char_count);
 
-            parent.addToLastAttributeOfTypeOrCreate(AttributeId::description_body, std::string("\n"));
+            parent.addToLastAttributeOfTypeOrCreate(AttributeId::text, std::string("\n"));
 
             id = SyntaxId::none;
         }
@@ -1273,15 +1285,8 @@ AttributeId getAttributeId(SemanticTokenId id) {
         return AttributeId::author;
     case SemanticTokenId::attr_date:
         return AttributeId::date;
-    case SemanticTokenId::attr_tags:
-        return AttributeId::tags;
-    case SemanticTokenId::attr_type:
-        return AttributeId::type;
-    case SemanticTokenId::attr_title:
-        return AttributeId::title;
-    case SemanticTokenId::attr_description:
-        return AttributeId::description_body;
-    
+    case SemanticTokenId::attr_test:
+        return AttributeId::test;
 
     default:
         return AttributeId::invalid;

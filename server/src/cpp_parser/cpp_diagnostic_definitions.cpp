@@ -45,6 +45,9 @@ const DiagnosticMessageArray diagnostic_msgs = [] {
     
     arr[static_cast<std::size_t>(DiagnosticId::attribute_child_of_attribute)] =
         "An attribute is being defined as child of another attribute";
+
+    arr[static_cast<std::size_t>(DiagnosticId::multiline_not_allowed)] =
+        "Parent element or attribute does not allow multiline values, define its value on the same line as its declaration";
         
     return arr;
 }();

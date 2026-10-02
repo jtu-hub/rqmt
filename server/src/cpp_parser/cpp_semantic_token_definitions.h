@@ -35,7 +35,7 @@ enum class SemanticTokenModifier {
     reference,
     desc,
     date,
-    type,
+    test,
     tags,
     id,
     unquoted,
@@ -83,11 +83,8 @@ enum class SemanticTokenId {
     ////////////////////////////////////////////////////////////////////////////
     attr_author = def_attr_start,
     attr_date,
-    attr_title,
-    attr_description,
-    attr_type,
-    attr_tags,
-
+    attr_test,
+    
     // ...
     ////////////////////////////////////////////////////////////////////////////
     // ATTRIBUTES TOKEN IDs ----------------------------------------------------

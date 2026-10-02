@@ -56,10 +56,15 @@ void ASTMerger::merge(AbstractSyntaxTree& destination, const AbstractSyntaxTree&
                               parent->getColumn(), parent->getColumn() + parent->getLength());
     }
 
+    AttributeId text_override_id = AttributeId::description_body;
+    if(m_st_is_attribute(parent_id)) {
+        text_override_id = getAttributeId(parent_id);
+    }
+
     if(line_number >= 0) {
-        origin.getRoot().copyAttributesTo(copy_target->asReference(), line_number);
+        origin.getRoot().copyAttributesTo(copy_target->asReference(), line_number, text_override_id);
     } else {
-        origin.getRoot().copyAttributesTo(copy_target->asReference(), origin.getRoot().getLine());
+        origin.getRoot().copyAttributesTo(copy_target->asReference(), origin.getRoot().getLine(), text_override_id);
     }
 
     //TODO: define proper helper functions again <3

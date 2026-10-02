@@ -117,21 +117,13 @@
             "foreground": "#FFBF7De8",
             "italic": true
           },
-          "meta.attribute.title:rqmt": {
+          "meta.attribute.test:rqmt": {
             "foreground": "#FFBF7De8",
             "italic": true,
             "bold": false,
             "underline": false
           },
-          "meta.attribute.description:rqmt": {
-            "foreground": "#FFBF7De8",
-            "italic": true
-          },
           "meta.attribute.date:rqmt": {
-            "foreground": "#FFBF7De8",
-            "italic": true
-          },
-          "meta.attribute.type:rqmt": {
             "foreground": "#FFBF7De8",
             "italic": true
           },
@@ -187,7 +179,7 @@
             "foreground": "#cacaca",
             "bold": true
           },
-          "pun.separator.colon.attribute:rqmt": {
+          "punctuation.separator.colon.attribute:rqmt": {
             "foreground": "#cacaca",
             "bold": true
           }
