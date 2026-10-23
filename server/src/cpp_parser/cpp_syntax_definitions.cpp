@@ -48,6 +48,8 @@ SemanticTokenDefinition alias_v         = {SemanticTokenId::alias_value,        
 SemanticTokenDefinition ref_brace       = {SemanticTokenId::reference_brace,    "reference.brace",        SemanticTokens::punctuation, {SemanticTokenModifier::brace, SemanticTokenModifier::reference, SemanticTokenModifier::none}};
 SemanticTokenDefinition ref_delim       = {SemanticTokenId::reference_delim,    "reference.delim",        SemanticTokens::punctuation, {SemanticTokenModifier::delimiter, SemanticTokenModifier::reference, SemanticTokenModifier::none}};
 SemanticTokenDefinition ref_value       = {SemanticTokenId::reference_value,    "reference.value",        SemanticTokens::meta,        {SemanticTokenModifier::reference, SemanticTokenModifier::none}};
+SemanticTokenDefinition tag_bracket     = {SemanticTokenId::tag_bracket,        "tag.bracket",            SemanticTokens::punctuation, {SemanticTokenModifier::bracket, SemanticTokenModifier::tag, SemanticTokenModifier::none}};
+SemanticTokenDefinition tag_delim_m     = {SemanticTokenId::tag_delim_m,        "tag.delim",              SemanticTokens::punctuation, {SemanticTokenModifier::delimiter, SemanticTokenModifier::tag, SemanticTokenModifier::none}};
 SemanticTokenDefinition id_delim        = {SemanticTokenId::id_delim,           "id.delim",               SemanticTokens::punctuation, {SemanticTokenModifier::delimiter, SemanticTokenModifier::id, SemanticTokenModifier::none}};
 SemanticTokenDefinition id_number       = {SemanticTokenId::id_number,          "id.number",              SemanticTokens::source,      {SemanticTokenModifier::id, SemanticTokenModifier::none}};
 SemanticTokenDefinition blck_delim      = {SemanticTokenId::block_delim,        "block.delim",            SemanticTokens::punctuation, {SemanticTokenModifier::block, SemanticTokenModifier::delimiter, SemanticTokenModifier::none}};
@@ -412,11 +414,14 @@ void decodeInlineReferenceName(bool* skip_get_token, bool* escape_next_token, in
 void decodeReference(bool* skip_get_token, bool* escape_next_token, int* pos_in_seq, SyntaxId& id, SyntaxNode& parent, const token_t& token) {
     m_check_pointers(skip_get_token, escape_next_token, pos_in_seq);
 
+    SyntaxElement entry_fence = SyntaxElement::brace_ref_o;
+    SyntaxElement exit_fence = SyntaxElement::brace_ref_c;
+
     switch (*pos_in_seq)
     {
     case 0:
         //Reference must start with '{'
-        if(!isTokenOfType(SyntaxElement::brace_ref_o, token)) {
+        if(!isTokenOfType(entry_fence, token)) {
             id = SyntaxId::none;
 
             if(!isTokenOfType(SyntaxElement::new_line, token))
@@ -481,7 +486,7 @@ void decodeReference(bool* skip_get_token, bool* escape_next_token, int* pos_in_
             
             parent.lastChild().addToLastAttributeOfTypeOrCreate(AttributeId::link, std::string(token.value));
 
-        } else if(isTokenOfType(SyntaxElement::brace_ref_c, token)) {
+        } else if(isTokenOfType(exit_fence, token)) {
             SyntaxNode& child = parent.lastChild().lastChild();
                    
             parent.lastChild().addToLastAttributeOfTypeOrCreate(AttributeId::link, ColumnSpan(child.getColumn(), child.getColumn() + child.getLength()));
@@ -834,6 +839,20 @@ void decodeRichText(bool* skip_get_token, bool* escape_next_token, int* pos_in_s
             *pos_in_seq = 0;
             *skip_get_token = true;
             
+        } else if(isTokenOfType(SyntaxElement::tag_o, token)) {
+            std::cerr << "DETECTED TAG OPEN: " << token.line << std::endl;
+            SyntaxNode& child = parent.lastChild();
+            
+            child = token_t{
+                .line = token.line, 
+                .column = token.column, 
+                .char_count = 0
+            };
+
+            id = SyntaxId::tag_after_bracket;
+            *pos_in_seq = 0;
+            *skip_get_token = true;
+
         } else if(isTokenOfType(SyntaxElement::block_delim, token) && blockDelimiterIsValid(token)) {
             //TODO make a function out of this and replace in this function where occurs
              if(token.char_count > 0 && token.value[0] == '`') {
@@ -1241,6 +1260,161 @@ void decodeInlineBlock(bool* skip_get_token, bool* escape_next_token, int* pos_i
     }
 }
 
+//TODO: add decode sequence
+//TODO: handle sequence start
+void decodeTags(bool* skip_get_token, bool* escape_next_token, int* pos_in_seq, SyntaxId& id, SyntaxNode& parent, const token_t& token) {
+    m_check_pointers(skip_get_token, escape_next_token, pos_in_seq);
+
+    const SyntaxElement entry_fence = id == SyntaxId::tag_after_bracket ? 
+        SyntaxElement::tag_o :
+        SyntaxElement::tag_m ;
+    const SyntaxElement exit_fence = SyntaxElement::tag_c;
+
+    switch (*pos_in_seq)
+    {
+    case 0:
+        //Tag must start with "%["
+        if(!isTokenOfType(entry_fence, token)) {
+            id = SyntaxId::none;
+
+            if(!isTokenOfType(SyntaxElement::new_line, token))
+                parent.lastChild().addDiagnostic( 
+                                     DiagnosticSeverity::error,
+                                     DiagnosticId::unexpected_token, 
+                                     m_file_src, token.line, token.line, 
+                                     token.column, token.column + 
+                                     token.char_count);
+        } else {
+            SyntaxNode& child = parent.lastChild().newChild();
+
+                        
+            parent.lastChild().addAttribute(AttributeId::link, TextSpan(""));
+            
+            child = token;
+            child = id == SyntaxId::tag_after_bracket ? tag_bracket : tag_delim_m;
+
+            (*pos_in_seq)++;
+        }
+
+        return;
+
+    case 1:
+        
+        if(isTokenOfType(SyntaxElement::dot, token)) {
+            (void)parent.lastChild().newChildFromToken(token, ref_delim);
+            
+            parent.lastChild().addToLastAttributeOfTypeOrCreate(AttributeId::link, std::string(token.value));
+
+        } else if(isTokenOfType(SyntaxElement::space, token)) {
+            //ignore spaces here
+            return;
+        } else if(isTokenOfType(SyntaxElement::ref_name, token)) {
+            (void)parent.lastChild().newChildFromToken(token, ref_value);
+            
+            parent.lastChild().addToLastAttributeOfTypeOrCreate(AttributeId::link, std::string(token.value));
+
+            (*pos_in_seq)++;            
+        } else {
+            id = SyntaxId::rich_text;//SyntaxId::none;
+            
+            if(!isTokenOfType(SyntaxElement::new_line, token))
+                parent.lastChild().addDiagnostic( 
+                                    DiagnosticSeverity::error,
+                                    DiagnosticId::wrong_ref_pattern,
+                                    m_file_src, token.line, token.line, 
+                                    token.column, token.column + 
+                                    token.char_count);
+        }
+
+        return;
+    case 2:
+        if(isTokenOfType(SyntaxElement::dot, token)) {
+            (void)parent.lastChild().newChildFromToken(token, ref_delim);
+            
+            parent.lastChild().addToLastAttributeOfTypeOrCreate(AttributeId::link, std::string(token.value));
+            
+            (*pos_in_seq)++;
+        } else if(isTokenOfType(SyntaxElement::ref_name, token)) {
+            SyntaxNode& child = parent.lastChild().lastChild();
+
+            
+            child.recomputeLength(token.column, token.char_count);
+            
+            parent.lastChild().addToLastAttributeOfTypeOrCreate(AttributeId::link, std::string(token.value));
+
+        } else if(isTokenOfType(SyntaxElement::tag_m, token)) {
+            id = SyntaxId::tag_after_delim_m;
+            *skip_get_token = true;
+            *pos_in_seq = 0;
+        } else if(isTokenOfType(exit_fence, token)) {
+            SyntaxNode& child = parent.lastChild().lastChild();
+                   
+            parent.lastChild().addToLastAttributeOfTypeOrCreate(AttributeId::link, ColumnSpan(child.getColumn(), child.getColumn() + child.getLength()));
+            parent.lastChild().lastAttributeOfType(AttributeId::link).valid = true;
+
+            (void)parent.lastChild().newChildFromToken(token, tag_bracket);
+            
+            //end of tag
+            *pos_in_seq = 4; //TODO: ensure that only a new line comes at the end!
+        } else {
+            id = SyntaxId::none;
+            
+            if(!isTokenOfType(SyntaxElement::new_line, token))                
+                parent.lastChild().addDiagnostic( 
+                                    DiagnosticSeverity::error,
+                                    DiagnosticId::wrong_ref_pattern,
+                                    m_file_src, token.line, token.line, 
+                                    token.column, token.column + 
+                                    token.char_count);
+        }
+
+        return;
+
+    case 3:
+        if(isTokenOfType(SyntaxElement::ref_name, token)) {
+            (void)parent.lastChild().newChildFromToken(token, ref_value);
+            
+            parent.lastChild().addToLastAttributeOfTypeOrCreate(AttributeId::link, std::string(token.value));
+            
+            (*pos_in_seq)--;
+        } else {
+            id = SyntaxId::rich_text;
+            
+            if(!isTokenOfType(SyntaxElement::new_line, token))
+                parent.lastChild().addDiagnostic( 
+                                    DiagnosticSeverity::error,
+                                    DiagnosticId::wrong_ref_pattern,
+                                    m_file_src, token.line, token.line, 
+                                    token.column, token.column + 
+                                    token.char_count);
+        }
+
+        return;
+    case 4:
+        if(!isTokenOfType(SyntaxElement::new_line, token) && !isTokenOfType(SyntaxElement::space, token)) {
+            id = SyntaxId::none;
+            
+            parent.lastChild().addDiagnostic( 
+                                DiagnosticSeverity::error,
+                                DiagnosticId::wrong_ref_pattern,
+                                m_file_src, token.line, token.line, 
+                                token.column, token.column + 
+                                token.char_count);
+        }
+        
+        return;
+    default:
+        id = SyntaxId::none;
+
+        parent.lastChild().addDiagnostic( 
+                             DiagnosticSeverity::error,
+                             DiagnosticId::unexpected_token,
+                             m_file_src, token.line, token.line, 
+                             token.column, token.column + token.char_count);
+        return;
+    }
+}
+
 int getKeywordCount() {
     return sizeof(keywords) / sizeof(keywords[0]);
 }
@@ -1325,7 +1499,8 @@ bool isTokenOfType(SyntaxElement type, token_t t) {
     case SyntaxElement::dot:
         return t.type == k_token_type_dot;
     case SyntaxElement::text:
-        return t.type == k_token_type_text;
+        return t.type == k_token_type_text        ||
+               t.type == k_token_type_pot_ref_name;
     case SyntaxElement::text_like:
         return t.type == k_token_type_text           || 
                t.type == k_token_type_number         || 
@@ -1340,6 +1515,9 @@ bool isTokenOfType(SyntaxElement type, token_t t) {
                t.type == k_token_type_dot            ||
                t.type == k_token_type_space          ||
                t.type == k_token_type_backtick_delim ||
+               t.type == k_token_type_tag_delim_m    ||
+               t.type == k_token_type_tag_close      ||
+               t.type == k_token_type_tag_open       ||
                t.type == k_token_type_math_delim     ||
                t.type == k_token_type_escape_char    ||
                t.type == k_token_type_hyphen;
@@ -1353,6 +1531,12 @@ bool isTokenOfType(SyntaxElement type, token_t t) {
         return t.type == k_token_type_brace_ref_o;
     case SyntaxElement::brace_ref_c:
         return t.type == k_token_type_brace_ref_c;
+    case SyntaxElement::tag_o:    
+        return t.type == k_token_type_tag_open;
+    case SyntaxElement::tag_c:
+        return t.type == k_token_type_tag_close;
+    case SyntaxElement::tag_m:
+        return t.type == k_token_type_tag_delim_m;
     case SyntaxElement::ref_name:
         return t.type == k_token_type_pot_ref_name ||
                t.type == k_token_type_pot_ref_num;

@@ -121,6 +121,9 @@ void parseSequence(SyntaxNode& parent, int* pos_in_sequence, SyntaxId& id,
     case SyntaxId::inline_math:
         decodeInlineBlock(skip_get_token, escape_next_token, pos_in_sequence, id, parent, token);
         break;
+    case SyntaxId::tag_after_delim_m:
+    case SyntaxId::tag_after_bracket:
+        decodeTags(skip_get_token, escape_next_token, pos_in_sequence, id, parent, token);
     default:
         break;
     }

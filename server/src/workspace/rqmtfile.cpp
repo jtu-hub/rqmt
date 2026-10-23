@@ -71,24 +71,24 @@ RqmtFile::RqmtFile(const std::string& uri, const std::string& input) : _uri(uri)
 
         line += '\n';
         
-        // std::cerr << "LINE " << line_count << ": " << line << "\n";
+        std::cerr << "LINE " << line_count << ": " << line << "\n";
         tokens_t tks = tokenizeLine(line.c_str(), line_count);
 
-        // std::cerr << "Tokens: ";
-        // node_t* n = NULL;
+        std::cerr << "Tokens: ";
+        node_t* n = NULL;
 
-        // while(iter(tks.tokens, &n)) {
-        //     token_t* data = (token_t*)getNodeData(n);
+        while(iter(tks.tokens, &n)) {
+            token_t* data = (token_t*)getNodeData(n);
             
-        //     std::cerr << data->type << " ";
-        // }
+            std::cerr << data->type << " ";
+        }
 
-        // std::cerr << "\n";
+        std::cerr << "\n";
 
         AbstractSyntaxTree line_ast = parseLine(tks, &indent_level, &indent_width, &indent_type);
         line_ast.getRootPointer()->setLine(line_count);
-        // std::cerr << "Computed line ast:\n";
-        // line_ast.debugPrintTree();
+        std::cerr << "Computed line ast:\n";
+        line_ast.debugPrintTree();
 
         Line& new_line = lines.emplace_back(line, indent_level, tks, line_ast);
         

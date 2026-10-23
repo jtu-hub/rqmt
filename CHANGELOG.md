@@ -25,7 +25,7 @@ to structure this file.
 - path resolution
 - generic reference link
 - hover info for links
--
+- add check of alias presence for tags
 
 ## [0.0.1] - 2026-06-17
 ### Added:

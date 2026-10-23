@@ -64,5 +64,7 @@
         "xutility": "cpp",
         "variant": "cpp",
         "xhash": "cpp"
-    }
+    },
+    "editor.guides.bracketPairs": "active",
+    "editor.bracketPairColorization.independentColorPoolPerBracketType": true
 }

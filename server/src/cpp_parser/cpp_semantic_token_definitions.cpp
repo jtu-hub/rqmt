@@ -38,6 +38,7 @@ const ModifierLegendArray tokenModifierLegend = [] {
     arr[static_cast<std::size_t>(SemanticTokenModifier::alias)]        = "alias";
     arr[static_cast<std::size_t>(SemanticTokenModifier::reference)]    = "reference";
     arr[static_cast<std::size_t>(SemanticTokenModifier::brace)]        = "brace";
+    arr[static_cast<std::size_t>(SemanticTokenModifier::bracket)]      = "bracket";
     arr[static_cast<std::size_t>(SemanticTokenModifier::delimiter)]    = "delimiter";
     arr[static_cast<std::size_t>(SemanticTokenModifier::block)]        = "block";
     arr[static_cast<std::size_t>(SemanticTokenModifier::multiline)]    = "multiline";

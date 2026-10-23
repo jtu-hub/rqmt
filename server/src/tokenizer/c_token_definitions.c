@@ -301,6 +301,115 @@ bool isDelimiter(char c) {
     return isFstringTokenStart(c) || isMathExprTokenStart(c);
 }
 
+// TAGS START -----------------------------------------------------------
+#define k_tag_delim_o_after_nl {        \
+    .isStartChar = isTagOpenTokenStart, \
+    .isEndChar   = isTagOpenTokenEnd,   \
+    .length = 2,                        \
+    .include_end_char = true,           \
+    .type = k_token_type_tag_open,      \
+    .depends_non = k_token_type_none,   \
+    .depends_on = k_token_type_new_line \
+}
+
+#define k_tag_delim_o_after_si {        \
+    .isStartChar = isTagOpenTokenStart, \
+    .isEndChar   = isTagOpenTokenEnd,   \
+    .length = 2,                        \
+    .include_end_char = true,           \
+    .type = k_token_type_tag_open,      \
+    .depends_non = k_token_type_none,   \
+    .depends_on = k_token_type_sindent  \
+}
+
+#define k_tag_delim_o_after_ti {        \
+    .isStartChar = isTagOpenTokenStart, \
+    .isEndChar   = isTagOpenTokenEnd,   \
+    .length = 2,                        \
+    .include_end_char = true,           \
+    .type = k_token_type_tag_open,      \
+    .depends_non = k_token_type_none,   \
+    .depends_on = k_token_type_tindent  \
+}
+
+bool isTagOpenTokenStart(char c) {
+    return c == '%';
+}
+
+bool isTagOpenTokenEnd(char c) {
+    return c == '[';
+}
+
+// TAGS END --------------------------------------------------------------------
+#define k_tag_delim_c_after_space {      \
+    .isStartChar = isTagCloseTokenStart, \
+    .isEndChar   = isTagCloseTokenStart, \
+    .length = 1,                         \
+    .include_end_char = true,            \
+    .type = k_token_type_tag_close,      \
+    .depends_non = k_token_type_none,    \
+    .depends_on = k_token_type_space     \
+}
+
+#define k_tag_delim_c_after_tag_name {      \
+    .isStartChar = isTagCloseTokenStart,    \
+    .isEndChar   = isTagCloseTokenStart,    \
+    .length = 1,                            \
+    .include_end_char = true,               \
+    .type = k_token_type_tag_close,         \
+    .depends_non = k_token_type_none,       \
+    .depends_on = k_token_type_pot_ref_name \
+}
+
+#define k_tag_delim_c_after_tag_number {   \
+    .isStartChar = isTagCloseTokenStart,   \
+    .isEndChar   = isTagCloseTokenStart,   \
+    .length = 1,                           \
+    .include_end_char = true,              \
+    .type = k_token_type_tag_close,        \
+    .depends_non = k_token_type_none,      \
+    .depends_on = k_token_type_pot_ref_num \
+}
+
+#define k_tag_delim_c_after_delim_m {      \
+    .isStartChar = isTagCloseTokenStart,   \
+    .isEndChar   = isTagCloseTokenStart,   \
+    .length = 1,                           \
+    .include_end_char = true,              \
+    .type = k_token_type_tag_close,        \
+    .depends_non = k_token_type_none,      \
+    .depends_on = k_token_type_tag_delim_m \
+}
+
+bool isTagCloseTokenStart(char c) {
+    return c == ']';
+}
+
+// TAGS MIDDLE DELIM -----------------------------------------------------------
+#define k_tag_delim_m_after_name {             \
+    .isStartChar = isTagDelimMiddleTokenStart, \
+    .isEndChar   = isTagDelimMiddleTokenStart, \
+    .length = 1,                               \
+    .include_end_char = true,                  \
+    .type = k_token_type_tag_delim_m,          \
+    .depends_non = k_token_type_none,          \
+    .depends_on = k_token_type_pot_ref_name    \
+}
+
+#define k_tag_delim_m_after_number {           \
+    .isStartChar = isTagDelimMiddleTokenStart, \
+    .isEndChar   = isTagDelimMiddleTokenStart, \
+    .length = 1,                               \
+    .include_end_char = true,                  \
+    .type = k_token_type_tag_delim_m,          \
+    .depends_non = k_token_type_none,          \
+    .depends_on = k_token_type_pot_ref_num     \
+}
+
+bool isTagDelimMiddleTokenStart(char c) {
+    return c == ',' || c == ' ';
+}
+
 // POTENTIAL KEYWORD -----------------------------------------------------------
 // Note: a potential keyword is only found at the beginning of a new line, i.e.
 //       after a new line or a indent
@@ -354,6 +463,36 @@ bool isKeywordTokenEnd(char c) {
     .depends_on = k_token_type_dot      \
 }
 
+#define k_ref_name_after_tag_open {     \
+    .isStartChar = isNameTokenStart,    \
+    .isEndChar   = isNameTokenEnd,      \
+    .length = k_variable_token_length,  \
+    .include_end_char = false,          \
+    .type = k_token_type_pot_ref_name,  \
+    .depends_non = k_token_type_none,   \
+    .depends_on = k_token_type_tag_open \
+}
+
+#define k_ref_name_after_space {        \
+    .isStartChar = isNameTokenStart,    \
+    .isEndChar   = isNameTokenEnd,      \
+    .length = k_variable_token_length,  \
+    .include_end_char = false,          \
+    .type = k_token_type_pot_ref_name,  \
+    .depends_non = k_token_type_none,   \
+    .depends_on = k_token_type_space    \
+}
+
+#define k_ref_name_after_delim_m {         \
+    .isStartChar = isNameTokenStart,       \
+    .isEndChar   = isNameTokenEnd,         \
+    .length = k_variable_token_length,     \
+    .include_end_char = false,             \
+    .type = k_token_type_pot_ref_name,     \
+    .depends_non = k_token_type_none,      \
+    .depends_on = k_token_type_tag_delim_m \
+}
+
 #define k_ref_name_after_brace_ref_o {     \
     .isStartChar = isNameTokenStart,       \
     .isEndChar   = isNameTokenEnd,         \
@@ -402,6 +541,36 @@ bool isKeywordTokenEnd(char c) {
     .type = k_token_type_pot_ref_num,       \
     .depends_non = k_token_type_none,       \
     .depends_on = k_token_type_dot          \
+}
+
+#define k_number_after_ref_space {          \
+    .isStartChar = isNumberTokenStart,      \
+    .isEndChar   = isNumberTokenEnd,        \
+    .length = k_variable_token_length,      \
+    .include_end_char = false,              \
+    .type = k_token_type_pot_ref_num,       \
+    .depends_non = k_token_type_none,       \
+    .depends_on = k_token_type_space        \
+}
+
+#define k_number_after_ref_delim_m {        \
+    .isStartChar = isNumberTokenStart,      \
+    .isEndChar   = isNumberTokenEnd,        \
+    .length = k_variable_token_length,      \
+    .include_end_char = false,              \
+    .type = k_token_type_pot_ref_num,       \
+    .depends_non = k_token_type_none,       \
+    .depends_on = k_token_type_tag_delim_m  \
+}
+
+#define k_number_after_tag_open {           \
+    .isStartChar = isNumberTokenStart,      \
+    .isEndChar   = isNumberTokenEnd,        \
+    .length = k_variable_token_length,      \
+    .include_end_char = false,              \
+    .type = k_token_type_pot_ref_num,       \
+    .depends_non = k_token_type_none,       \
+    .depends_on = k_token_type_tag_open     \
 }
 
 bool isNameTokenStart(char c) {
@@ -465,6 +634,9 @@ const token_definition_t token_definitions[] = {
     k_text,
     k_ref_name_after_dot,
     k_ref_name_after_brace_ref_o,
+    k_ref_name_after_tag_open,
+    k_ref_name_after_delim_m,
+    k_ref_name_after_space,
     k_ref_name_after_number,
     k_keyword_after_nl,
     k_keyword_after_si,
@@ -472,7 +644,10 @@ const token_definition_t token_definitions[] = {
     k_number,
     k_number_after_ref,
     k_number_after_ref_dot,
+    k_number_after_ref_delim_m,
+    k_number_after_ref_space,
     k_number_after_ref_brace,
+    k_number_after_tag_open,
     k_sindent_after_nl,
     k_sindent_after_ti,
     k_tindent_after_nl,
@@ -481,6 +656,15 @@ const token_definition_t token_definitions[] = {
     k_brace_ref_o,
     k_brace_c,
     k_brace_ref_c,
+    k_tag_delim_o_after_ti,
+    k_tag_delim_o_after_si,
+    k_tag_delim_o_after_nl,
+    k_tag_delim_m_after_name,
+    k_tag_delim_m_after_number,
+    k_tag_delim_c_after_delim_m,
+    k_tag_delim_c_after_tag_number,
+    k_tag_delim_c_after_tag_name,
+    k_tag_delim_c_after_space,
     k_hyphen,
     k_dot,
     k_column,

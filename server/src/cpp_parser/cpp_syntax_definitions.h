@@ -18,6 +18,9 @@ enum class SyntaxElement {
     keyword,
     brace_ref_o,
     brace_ref_c,
+    tag_o,
+    tag_m,
+    tag_c,
     block_delim,
     dot,
     column,
@@ -46,6 +49,8 @@ enum class SyntaxId {
     multiline_math,
     inline_math,
     inline_block,
+    tag_after_bracket,
+    tag_after_delim_m,
     // count
     count,
 };
@@ -75,6 +80,8 @@ void decodeRichText(bool* skip_get_token, bool* escape_next_token, int* pos_in_s
 void decodeMultilineBlock(bool* skip_get_token, bool* escape_next_token, int* pos_in_seq, SyntaxId& id, SyntaxNode& parent, const token_t& token);
 
 void decodeInlineBlock(bool* skip_get_token, bool* escape_next_token, int* pos_in_seq, SyntaxId& id, SyntaxNode& parent, const token_t& token);
+
+void decodeTags(bool* skip_get_token, bool* escape_next_token, int* pos_in_seq, SyntaxId& id, SyntaxNode& parent, const token_t& token);
 
 SemanticTokenDefinition& getValueBodyDefinition();
 

@@ -35,6 +35,9 @@ typedef enum TokenType {
     k_token_type_escape_char,
     k_token_type_backtick_delim,
     k_token_type_math_delim,
+    k_token_type_tag_open,
+    k_token_type_tag_delim_m,
+    k_token_type_tag_close,
 // -----------------------------------------------------------------------------
     k_token_type_EOF,
     k_token_type_count
