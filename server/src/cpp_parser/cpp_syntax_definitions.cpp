@@ -48,7 +48,9 @@ SemanticTokenDefinition alias_v         = {SemanticTokenId::alias_value,        
 SemanticTokenDefinition ref_brace       = {SemanticTokenId::reference_brace,    "reference.brace",        SemanticTokens::punctuation, {SemanticTokenModifier::brace, SemanticTokenModifier::reference, SemanticTokenModifier::none}};
 SemanticTokenDefinition ref_delim       = {SemanticTokenId::reference_delim,    "reference.delim",        SemanticTokens::punctuation, {SemanticTokenModifier::delimiter, SemanticTokenModifier::reference, SemanticTokenModifier::none}};
 SemanticTokenDefinition ref_value       = {SemanticTokenId::reference_value,    "reference.value",        SemanticTokens::meta,        {SemanticTokenModifier::reference, SemanticTokenModifier::none}};
+SemanticTokenDefinition tag_value       = {SemanticTokenId::tag_value,          "tag.value",              SemanticTokens::meta,        {SemanticTokenModifier::tag, SemanticTokenModifier::none}};
 SemanticTokenDefinition tag_bracket     = {SemanticTokenId::tag_bracket,        "tag.bracket",            SemanticTokens::punctuation, {SemanticTokenModifier::bracket, SemanticTokenModifier::tag, SemanticTokenModifier::none}};
+SemanticTokenDefinition tag_val_delim   = {SemanticTokenId::tag_val_delim,      "tag.val_delim",          SemanticTokens::meta,        {SemanticTokenModifier::delimiter, SemanticTokenModifier::tag, SemanticTokenModifier::none}};
 SemanticTokenDefinition tag_delim_m     = {SemanticTokenId::tag_delim_m,        "tag.delim",              SemanticTokens::punctuation, {SemanticTokenModifier::delimiter, SemanticTokenModifier::tag, SemanticTokenModifier::none}};
 SemanticTokenDefinition id_delim        = {SemanticTokenId::id_delim,           "id.delim",               SemanticTokens::punctuation, {SemanticTokenModifier::delimiter, SemanticTokenModifier::id, SemanticTokenModifier::none}};
 SemanticTokenDefinition id_number       = {SemanticTokenId::id_number,          "id.number",              SemanticTokens::source,      {SemanticTokenModifier::id, SemanticTokenModifier::none}};
@@ -1301,19 +1303,29 @@ void decodeTags(bool* skip_get_token, bool* escape_next_token, int* pos_in_seq, 
     case 1:
         
         if(isTokenOfType(SyntaxElement::dot, token)) {
-            (void)parent.lastChild().newChildFromToken(token, ref_delim);
+            (void)parent.lastChild().newChildFromToken(token, tag_val_delim);
             
             parent.lastChild().addToLastAttributeOfTypeOrCreate(AttributeId::link, std::string(token.value));
 
         } else if(isTokenOfType(SyntaxElement::space, token)) {
             //ignore spaces here
             return;
-        } else if(isTokenOfType(SyntaxElement::ref_name, token)) {
-            (void)parent.lastChild().newChildFromToken(token, ref_value);
+        } else if(isTokenOfType(SyntaxElement::tag_name, token)) {
+            (void)parent.lastChild().newChildFromToken(token, tag_value);
             
             parent.lastChild().addToLastAttributeOfTypeOrCreate(AttributeId::link, std::string(token.value));
 
             (*pos_in_seq)++;            
+        } else if(id == SyntaxId::tag_after_delim_m && isTokenOfType(exit_fence, token)) {
+            SyntaxNode& child = parent.lastChild().lastChild();
+                   
+            parent.lastChild().addToLastAttributeOfTypeOrCreate(AttributeId::link, ColumnSpan(child.getColumn(), child.getColumn() + child.getLength()));
+            parent.lastChild().lastAttributeOfType(AttributeId::link).valid = true;
+
+            (void)parent.lastChild().newChildFromToken(token, tag_bracket);
+            
+            //end of tag
+            *pos_in_seq = 4;
         } else {
             id = SyntaxId::rich_text;//SyntaxId::none;
             
@@ -1329,12 +1341,12 @@ void decodeTags(bool* skip_get_token, bool* escape_next_token, int* pos_in_seq, 
         return;
     case 2:
         if(isTokenOfType(SyntaxElement::dot, token)) {
-            (void)parent.lastChild().newChildFromToken(token, ref_delim);
+            (void)parent.lastChild().newChildFromToken(token, tag_val_delim);
             
             parent.lastChild().addToLastAttributeOfTypeOrCreate(AttributeId::link, std::string(token.value));
             
             (*pos_in_seq)++;
-        } else if(isTokenOfType(SyntaxElement::ref_name, token)) {
+        } else if(isTokenOfType(SyntaxElement::tag_name, token)) {
             SyntaxNode& child = parent.lastChild().lastChild();
 
             
@@ -1371,8 +1383,8 @@ void decodeTags(bool* skip_get_token, bool* escape_next_token, int* pos_in_seq, 
         return;
 
     case 3:
-        if(isTokenOfType(SyntaxElement::ref_name, token)) {
-            (void)parent.lastChild().newChildFromToken(token, ref_value);
+        if(isTokenOfType(SyntaxElement::tag_name, token)) {
+            (void)parent.lastChild().newChildFromToken(token, tag_value);
             
             parent.lastChild().addToLastAttributeOfTypeOrCreate(AttributeId::link, std::string(token.value));
             
@@ -1538,6 +1550,9 @@ bool isTokenOfType(SyntaxElement type, token_t t) {
     case SyntaxElement::tag_m:
         return t.type == k_token_type_tag_delim_m;
     case SyntaxElement::ref_name:
+        return t.type == k_token_type_pot_ref_name ||
+               t.type == k_token_type_pot_ref_num;
+    case SyntaxElement::tag_name:
         return t.type == k_token_type_pot_ref_name ||
                t.type == k_token_type_pot_ref_num;
     case SyntaxElement::ref_num:

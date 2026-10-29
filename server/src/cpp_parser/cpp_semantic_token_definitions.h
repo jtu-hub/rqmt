@@ -129,6 +129,8 @@ enum class SemanticTokenId {
     reference_value,
     tag_bracket,
     tag_delim_m,
+    tag_value,
+    tag_val_delim,
     id_delim,
     id_number,
     block_delim,

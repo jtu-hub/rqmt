@@ -31,6 +31,8 @@ enum class SyntaxElement {
     attribute,
     ref_name,
     ref_num,
+    tag_name,
+    tag_num,
     space,
     escape,
     any

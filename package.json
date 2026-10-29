@@ -182,6 +182,15 @@
             "foreground": "#46bd92",
             "bold": true
           },
+          "meta.delimiter.tag": {
+            "foreground": "#b1ecd6",
+            "bold": true
+          },
+          "meta.tag": {
+            "foreground": "#84e8c3",
+            "bold": false,
+            "italic": true
+          },
           "source.id": {
             "foreground": "#CCB350",
             "bold": true
