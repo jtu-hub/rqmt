@@ -35,9 +35,7 @@ bump_version()
 
 add_subdirectory(util) 
 add_subdirectory(tokenizer)
-add_subdirectory(cpp_parser)
-add_subdirectory(workspace)
-add_subdirectory(lsp)
+add_subdirectory(parser)
 
 # Function to copy a target to a specified output location
 # ARG0  The name of the target exe (without extension) in the working directory
@@ -92,23 +90,23 @@ function(build_target)
         add_dependencies(${TARGET_NAME} bump_version_target)
     endif()
 
-    target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror -std=c++20)
 
-    target_link_libraries(${TARGET_NAME} util tokenizer)
+    # target_link_libraries(${TARGET_NAME} util tokenizer)
     
-        target_include_directories(${TARGET_NAME} PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/tokenizer
-            ${CMAKE_CURRENT_SOURCE_DIR}/util
-        )
+    # target_include_directories(${TARGET_NAME} PRIVATE
+    #     ${CMAKE_CURRENT_SOURCE_DIR}/tokenizer
+    #     ${CMAKE_CURRENT_SOURCE_DIR}/util
+    # )
 
     if(${ARGV1} STREQUAL  "cpp")
-        target_link_libraries(${TARGET_NAME} cpp_parser workspace lsp)
+        target_link_libraries(${TARGET_NAME} tokenizer parser util)
 
         target_include_directories(${TARGET_NAME} PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/cpp_parser
-            ${CMAKE_CURRENT_SOURCE_DIR}/workspace
-            ${CMAKE_CURRENT_SOURCE_DIR}/lsp
             ${CMAKE_CURRENT_SOURCE_DIR}/util
+            ${CMAKE_CURRENT_SOURCE_DIR}/tokenizer
+            ${CMAKE_CURRENT_SOURCE_DIR}/parser
+            
             nlohmann_json::nlohmann_json
         )
     endif()
@@ -124,4 +122,5 @@ function(build_target_cpp)
     build_target(${ARGV0} cpp)
 endfunction(build_target_cpp)
 
-build_target_cpp(rqmt)
+# build_target_cpp(rqmt)
+build_target_cpp(test)
