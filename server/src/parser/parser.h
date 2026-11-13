@@ -1,6 +1,6 @@
 #pragma once
 
-#include "parser_util.h"
 #include "tokenizer.h"
+#include "abstract_syntax_tree.h"
 
 void parse(const std::string &input, TokenizerResult res, AST &ast);

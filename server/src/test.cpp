@@ -15,4 +15,6 @@ int main(int argc, char **argw)
     AST ast;
 
     parse(input, tks, ast);
+
+    ast.printTree();
 }

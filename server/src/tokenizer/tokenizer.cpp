@@ -10,7 +10,7 @@ class TokenizerContext
     TokenizerResult res{};
 
 public:
-    TokenDefinitions::TokenType state = TokenDefinitions::TokenType::Invalid;
+    TokenType state = TokenType::Invalid;
     static constexpr const char sentinel_char = '\0';
 
     TokenizerContext(const std::string &input) : input(input) {};
@@ -80,18 +80,17 @@ public:
         }
     }
 
-    void newToken(const TokenDefinitions::TokenType &type, const file_offset_t &token_start, const file_offset_t &token_length)
+    void newToken(const TokenType &type, const file_offset_t &token_start, const file_offset_t &token_length)
     {
-        res.tokens.emplace_back(
-            TokenDefinitions::Token{
-                .type = type,
-                .offset = token_start,
-                .length = token_length});
+        res.tokens.emplace_back(Token{
+            {token_start, token_length},
+            type});
     }
 
-    void resetState()
+    void
+    resetState()
     {
-        state = TokenDefinitions::TokenType::Invalid;
+        state = TokenType::Invalid;
     }
 
     const TokenizerResult &getResult() const { return res; };
@@ -105,9 +104,9 @@ TokenizerResult tokenize(const std::string &input)
     {
         const char &c = ctx.currentChar();
 
-        TokenDefinitions::TokenType type = TokenDefinitions::getTokenDefinitionFor(c);
+        TokenType type = getTokenDefinitionFor(c);
 
-        if (ctx.state == TokenDefinitions::TokenType::Invalid)
+        if (ctx.state == TokenType::Invalid)
         {
             ctx.state = type;
         }
@@ -117,7 +116,7 @@ TokenizerResult tokenize(const std::string &input)
 
         switch (ctx.state)
         {
-        case TokenDefinitions::TokenType::NewLine:
+        case TokenType::NewLine:
             if (c == '\r' && ctx.lookAhead() == '\n')
             {
                 token_length = 2;
@@ -126,18 +125,18 @@ TokenizerResult tokenize(const std::string &input)
             ctx.newLine(token_length);
             break;
 
-        case TokenDefinitions::TokenType::Spaces:
-        case TokenDefinitions::TokenType::Number:
-        case TokenDefinitions::TokenType::Text:
-            while (ctx.state == TokenDefinitions::getTokenDefinitionFor(ctx.lookAhead(token_length)))
+        case TokenType::Spaces:
+        case TokenType::Number:
+        case TokenType::Text:
+            while (ctx.state == getTokenDefinitionFor(ctx.lookAhead(token_length)))
             {
                 token_length++;
             }
             break;
 
-        case TokenDefinitions::TokenType::Punctuation:
-        case TokenDefinitions::TokenType::Fence:
-        case TokenDefinitions::TokenType::Modifier:
+        case TokenType::Punctuation:
+        case TokenType::Fence:
+        case TokenType::Modifier:
         default:
             break;
         }

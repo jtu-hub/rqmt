@@ -38,7 +38,7 @@ consteval size_t constIndexOf(std::string_view word)
         }
     }
 
-    throw "unknown token in legend"; // reached -> not a constant expression -> build error
+    throw std::runtime_error("unknown token in legend"); // reached -> not a constant expression -> build error
 }
 
 template <auto &Legend>
@@ -82,7 +82,7 @@ constexpr std::array<T, N> unique(const std::array<T, N> &arr)
         for (std::size_t j = i + 1; j < N; ++j)
         {
             if (arr[i] == arr[j])
-                throw "Duplicate array entry";
+                throw std::runtime_error("Duplicate array entry");
         }
     }
 

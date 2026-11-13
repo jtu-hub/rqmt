@@ -6,7 +6,7 @@
 #include "util.h"
 #include "token_definition.h"
 
-using Tokens = std::vector<TokenDefinitions::Token>;
+using Tokens = std::vector<Token>;
 using LineOffsets = std::vector<file_offset_t>;
 
 struct TokenizerResult

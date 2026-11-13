@@ -1,7 +1,12 @@
-#include "parser_util.h"
 #include "semantic_tokens.h"
 
-void SemanticTokenModifierHandler::set(const std::string_view &modifier)
+SemanticTokenModifierHandler::SemanticTokenModifierHandler(std::initializer_list<std::string_view> modifiers)
+{
+    for (const auto &modifier : modifiers)
+        setModifier(modifier);
+}
+
+void SemanticTokenModifierHandler::setModifier(const std::string_view &modifier)
 {
     const size_t idx = indexOf<semantic_token_modifiers>(modifier);
 
@@ -10,7 +15,8 @@ void SemanticTokenModifierHandler::set(const std::string_view &modifier)
         modifiers |= 1 << idx;
     }
 }
-void SemanticTokenModifierHandler::unset(const std::string_view &modifier)
+
+void SemanticTokenModifierHandler::unsetModifier(const std::string_view &modifier)
 {
     const size_t idx = indexOf<semantic_token_modifiers>(modifier);
 
@@ -19,7 +25,8 @@ void SemanticTokenModifierHandler::unset(const std::string_view &modifier)
         modifiers &= !(1 << idx);
     }
 }
-bool SemanticTokenModifierHandler::has(const std::string_view &modifier)
+
+bool SemanticTokenModifierHandler::hasModifier(const std::string_view &modifier)
 {
     const size_t idx = indexOf<semantic_token_modifiers>(modifier);
 
