@@ -11,15 +11,36 @@ public:
     virtual void decode(ParserContext &ctx, ASTContext &ast_ctx) = 0;
 };
 
+class Entity : public SyntaxNode, public NodeDecoder
+{
+public:
+    Entity(Token token, SyntaxNode *parent = nullptr) : SyntaxNode(token, "keyword", {"entity"}, parent) {}
+    virtual void decode(ParserContext &ctx, ASTContext &ast_ctx) override;
+
+    /*template <typename T, typename... Args>
+    T *addChild(Args &&...args)
+    {
+        T *child = SyntaxNode::addChild<T>(
+            std::forward<Args>(args)...);
+
+        if constexpr (std::is_same_v<T, RichText>)
+        {
+            // Entity-specific RichText handling.
+            // For example: register the description node.
+        }
+
+        return child;
+    }*/
+};
+
+class Attribute : public SyntaxNode, public NodeDecoder
+{
+public:
+    Attribute(Token token, SyntaxNode *parent = nullptr) : SyntaxNode(token, "keyword", {"attribute"}, parent) {}
+    virtual void decode(ParserContext &ctx, ASTContext &ast_ctx) override;
+};
+
 /*
-class Entity : public SyntaxNode
-{
-};
-
-class Attribute : public SyntaxNode
-{
-};
-
 class TagList : public SyntaxNode
 {
 };*/

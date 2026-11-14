@@ -47,3 +47,20 @@ std::string_view ParserContext::tokenView() const
         token.offset,
         token.length);
 }
+
+std::string_view ParserContext::peekView(int peek_idx) const
+{
+    const Token &token = peek(peek_idx);
+
+    if (&token == &sentinel_token)
+        return {};
+
+    return std::string_view(input).substr(
+        token.offset,
+        token.length);
+}
+
+bool ParserContext::isCurrentToken(TokenType type, std::string_view value) const
+{
+    return currentToken().type == type && tokenView() == value;
+}

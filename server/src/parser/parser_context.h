@@ -36,5 +36,7 @@ public:
     const Token &peek(int peek_idx = 1) const;
     bool advance(const int advance_offset);
     std::string_view tokenView() const;
+    std::string_view peekView(int peek_idx) const;
     const Token &currentToken() const;
+    bool isCurrentToken(TokenType type, std::string_view value) const;
 };

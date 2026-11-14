@@ -22,7 +22,7 @@ void AbstractSyntaxTree::printNode(const SyntaxNode *node, std::ostream &out, co
     const auto &definition = node->getDefinition();
 
     out << prefix
-        << (isLast ? "o--- " : "|--- ") //"└── " : "├── ")
+        << (isLast ? "O-- " : "|-- ") //"└── " : "├── ")
         << definition.getTypeName()
         << " ["
         << range.offset << ", "
@@ -50,7 +50,7 @@ void AbstractSyntaxTree::printNode(const SyntaxNode *node, std::ostream &out, co
     const auto &children = node->getChildren();
 
     const std::string childPrefix =
-        prefix + (isLast ? "    " : "│   ");
+        prefix + (isLast ? "    " : "|   ");
 
     for (std::size_t i = 0; i < children.size(); ++i)
     {
@@ -64,6 +64,7 @@ void AbstractSyntaxTree::printNode(const SyntaxNode *node, std::ostream &out, co
 
 SyntaxNode *ASTContext::changeLevel(int change_level)
 {
+    std::cout << "CHANGE LEVEL: " << change_level << std::endl;
     if (parent == nullptr)
         nullptr;
 

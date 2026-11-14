@@ -27,25 +27,32 @@ bool decodeContent(ParserContext &ctx, ASTContext &ast_ctx)
         const bool is_entity = idx_of_entity_kw < entity_keywords.size();
         const bool is_attr = idx_of_attr_kw < attribute_keywords.size();
 
-        if (false && is_entity)
+        if (is_entity)
         {
-            // add new entity decoder here and set as parent, increase indent level
+            // TODO add proper diagnostics based on irregular indents....
+            //  add new entity decoder here and set as parent, increase indent level
+            Entity *entity = ast_ctx.currentParent()->addChild<Entity>(ctx.currentToken());
+            entity->decode(ctx, ast_ctx);
         }
-        else if (false && is_attr)
+        else if (is_attr)
         {
             // add new attribute decoder and set as parent, increase indent level
+            Attribute *attr = ast_ctx.currentParent()->addChild<Attribute>(ctx.currentToken());
+            attr->decode(ctx, ast_ctx);
         }
         else
         {
+            RichText *rt = ast_ctx.currentParent()->getLastChildOnlyIfType<RichText>();
             // get the last (or add) a rich text decoder set as parent
-            if (!ast_ctx.currentParent()->isLastChildOfType<RichText>())
+            if (!rt)
             {
-                ast_ctx.currentParent()->addChild<RichText>(ctx.currentToken());
+                rt = ast_ctx.currentParent()->addChild<RichText>(ctx.currentToken());
                 // Note: we do not advance here, it simplifies the break logic in the decode function and does not
-                //       require to add additional checks
+                //       require to add additional checks, even though we recompute the length of this first token in
+                //       the first iteration of decode
             }
 
-            ast_ctx.levelDown()->as<RichText>()->decode(ctx, ast_ctx);
+            rt->decode(ctx, ast_ctx);
         }
 
         break;
@@ -109,6 +116,17 @@ void parse(const std::string &input, TokenizerResult res, AST &ast)
                 if (!ctx.advance(1))
                     throw std::runtime_error("TODO proper error handling");
             }
+            else
+            {
+                int new_indent_level = 0;
+
+                ctx.indent.level_change = new_indent_level - ctx.indent.level;
+
+                ctx.indent.level = new_indent_level;
+                ctx.indent.irregular_depth = false;
+            }
+
+            ast_ctx.changeLevel(ctx.indent.level_change);
 
             ctx.main_state = ParserMainState::Content;
 

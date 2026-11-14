@@ -45,7 +45,7 @@ constexpr auto additiona_modifers = std::to_array<std::string_view>({
     "documentation",
 });
 
-constexpr auto semantic_token_modifiers = unique(limit<32>(concat(entity_keywords, additiona_modifers)));
+constexpr auto semantic_token_modifiers = unique(limit<32>(concat(additiona_modifers, entity_keywords)));
 
 inline std::string_view semanticTokenTypeName(SemanticTokenType type)
 {
