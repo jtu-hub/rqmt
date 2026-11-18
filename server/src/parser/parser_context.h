@@ -39,4 +39,5 @@ public:
     std::string_view peekView(int peek_idx) const;
     const Token &currentToken() const;
     bool isCurrentToken(TokenType type, std::string_view value) const;
+    bool isCurrentToken(TokenType type) const;
 };

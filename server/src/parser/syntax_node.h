@@ -19,8 +19,10 @@ protected:
 public:
     SyntaxNode();
     SyntaxNode(SemanticTokenType type, SemanticTokenModifierHandler modifiers, SyntaxNode *parent = nullptr);
-    SyntaxNode(Token token, std::string_view type, std::initializer_list<std::string_view> modifiers = {}, SyntaxNode *parent = nullptr);
+    SyntaxNode(Token token, std::string_view type, ModifierList modifiers = {}, SyntaxNode *parent = nullptr);
+    SyntaxNode(Token token, std::string_view type, SemanticTokenModifierHandler modifiers, SyntaxNode *parent = nullptr);
     SyntaxNode(Token token, SemanticTokenDefinition definition, SyntaxNode *parent = nullptr);
+    SyntaxNode(OffsetRange range, std::string_view type, SemanticTokenModifierHandler modifiers = {}, SyntaxNode *parent = nullptr);
 
     virtual ~SyntaxNode();
 

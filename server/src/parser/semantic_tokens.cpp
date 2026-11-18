@@ -1,6 +1,6 @@
 #include "semantic_tokens.h"
 
-SemanticTokenModifierHandler::SemanticTokenModifierHandler(std::initializer_list<std::string_view> modifiers)
+SemanticTokenModifierHandler::SemanticTokenModifierHandler(ModifierList modifiers)
 {
     for (const auto &modifier : modifiers)
         setModifier(modifier);

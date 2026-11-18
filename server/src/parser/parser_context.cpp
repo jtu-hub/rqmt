@@ -64,3 +64,8 @@ bool ParserContext::isCurrentToken(TokenType type, std::string_view value) const
 {
     return currentToken().type == type && tokenView() == value;
 }
+
+bool ParserContext::isCurrentToken(TokenType type) const
+{
+    return currentToken().type == type;
+}

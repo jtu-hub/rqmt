@@ -30,13 +30,13 @@ bool decodeContent(ParserContext &ctx, ASTContext &ast_ctx)
         if (is_entity)
         {
             // TODO add proper diagnostics based on irregular indents....
-            //  add new entity decoder here and set as parent, increase indent level
+            //  add new entity decoder here and set as parent
             Entity *entity = ast_ctx.currentParent()->addChild<Entity>(ctx.currentToken());
             entity->decode(ctx, ast_ctx);
         }
         else if (is_attr)
         {
-            // add new attribute decoder and set as parent, increase indent level
+            // add new attribute decoder and set as parent
             Attribute *attr = ast_ctx.currentParent()->addChild<Attribute>(ctx.currentToken());
             attr->decode(ctx, ast_ctx);
         }

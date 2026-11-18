@@ -11,7 +11,8 @@ enum class TokenType
     Text,
     Number,
     Fence,
-    Modifier
+    Modifier,
+    Other,
 };
 
 struct OffsetRange

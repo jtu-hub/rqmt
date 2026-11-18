@@ -33,6 +33,36 @@ public:
     }*/
 };
 
+class Alias : public SyntaxNode, public NodeDecoder
+{
+    std::string_view parent_keyword;
+
+public:
+    Alias(std::string_view parent_keyword) : SyntaxNode(-1, SemanticTokenModifierHandler(), parent),
+                                             parent_keyword(parent_keyword) {}
+    virtual void decode(ParserContext &ctx, ASTContext &ast_ctx) override;
+};
+
+class EntityId : public SyntaxNode, public NodeDecoder
+{
+    std::string_view parent_keyword;
+
+public:
+    EntityId(std::string_view parent_keyword) : SyntaxNode(-1, SemanticTokenModifierHandler(), parent),
+                                                parent_keyword(parent_keyword) {}
+    virtual void decode(ParserContext &ctx, ASTContext &ast_ctx) override;
+};
+
+class PathDecoder : public SyntaxNode, public NodeDecoder
+{
+    SemanticTokenModifierHandler modifiers;
+
+public:
+    PathDecoder(Token token, SyntaxNode *parent = nullptr, SemanticTokenModifierHandler modifiers = {{"filepath"}}) : SyntaxNode(token, "reference", ModifierList{}, parent),
+                                                                                                                      modifiers(modifiers) {}
+    virtual void decode(ParserContext &ctx, ASTContext &ast_ctx) override;
+};
+
 class Attribute : public SyntaxNode, public NodeDecoder
 {
 public:
@@ -48,6 +78,6 @@ class TagList : public SyntaxNode
 class RichText : public SyntaxNode, public NodeDecoder
 {
 public:
-    RichText(Token token, SyntaxNode *parent = nullptr) : SyntaxNode(token, "comment", {"documentation"}, parent) {}
+    RichText(Token token, SyntaxNode *parent = nullptr) : SyntaxNode(token, "text", {"documentation"}, parent) {}
     virtual void decode(ParserContext &ctx, ASTContext &ast_ctx) override;
 };

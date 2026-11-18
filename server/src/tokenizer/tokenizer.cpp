@@ -128,6 +128,7 @@ TokenizerResult tokenize(const std::string &input)
         case TokenType::Spaces:
         case TokenType::Number:
         case TokenType::Text:
+        case TokenType::Other:
             while (ctx.state == getTokenDefinitionFor(ctx.lookAhead(token_length)))
             {
                 token_length++;

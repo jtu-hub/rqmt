@@ -13,10 +13,20 @@ SyntaxNode::SyntaxNode() : definition(-1, SemanticTokenModifierHandler()),
                            parent(nullptr),
                            range{} {}
 
-SyntaxNode::SyntaxNode(Token token, std::string_view type, std::initializer_list<std::string_view> modifiers, SyntaxNode *parent) : definition(type, modifiers),
-                                                                                                                                    children(),
-                                                                                                                                    parent(parent),
-                                                                                                                                    range{token.offset, token.length} {}
+SyntaxNode::SyntaxNode(Token token, std::string_view type, ModifierList modifiers, SyntaxNode *parent) : definition(type, modifiers),
+                                                                                                         children(),
+                                                                                                         parent(parent),
+                                                                                                         range{token.offset, token.length} {}
+
+SyntaxNode::SyntaxNode(OffsetRange range, std::string_view type, SemanticTokenModifierHandler modifiers, SyntaxNode *parent) : definition(type, modifiers),
+                                                                                                                               children(),
+                                                                                                                               parent(parent),
+                                                                                                                               range(range) {}
+
+SyntaxNode::SyntaxNode(Token token, std::string_view type, SemanticTokenModifierHandler modifiers, SyntaxNode *parent) : definition(type, modifiers),
+                                                                                                                         children(),
+                                                                                                                         parent(parent),
+                                                                                                                         range{token.offset, token.length} {}
 
 SyntaxNode::SyntaxNode(Token token, SemanticTokenDefinition definition, SyntaxNode *parent) : definition(definition),
                                                                                               children(),

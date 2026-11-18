@@ -12,7 +12,7 @@ private:
     void printNode(const SyntaxNode *node, std::ostream &out, const std::string &prefix, bool isLast) const;
 
 public:
-    AbstractSyntaxTree() : root(new SyntaxNode(-1, SemanticTokenModifierHandler(), nullptr)) {}
+    AbstractSyntaxTree() : root(new SyntaxNode()) {}
 
     template <typename T>
     T *getRoot() { return dynamic_cast<T *>(root.get()); }

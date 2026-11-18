@@ -11,6 +11,15 @@ constexpr inline bool isNumber(const char &c)
     return false;
 }
 
+constexpr inline bool isText(const char &c)
+{
+    if (('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z'))
+    {
+        return true;
+    }
+    return false;
+}
+
 constexpr inline bool isFence(const char &c)
 {
     return std::string_view("[]{}$`()\"'").find(c) != std::string_view::npos;
@@ -18,7 +27,7 @@ constexpr inline bool isFence(const char &c)
 
 constexpr inline bool isPunctuation(char c)
 {
-    return std::string_view(".,_:?!").find(c) != std::string_view::npos;
+    return std::string_view(".,_-:?!").find(c) != std::string_view::npos;
 }
 
 constexpr inline bool isModifier(char c)
@@ -47,8 +56,10 @@ TokenType getTokenDefinitionFor(const char &c)
             return TokenType::Punctuation;
         else if (isModifier(c))
             return TokenType::Modifier;
-        else
+        else if (isText(c))
             return TokenType::Text;
+        else
+            return TokenType::Other;
     }
     }
 }

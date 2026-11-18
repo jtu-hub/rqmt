@@ -9,40 +9,31 @@
 
 using SemanticTokenModifiers = uint32_t;
 using SemanticTokenType = int;
+using ModifierList = std::vector<std::string_view>;
 
 constexpr auto semantic_token_types = std::to_array<std::string_view>({
+    "text",
     "keyword",
-    "fence",
+    "prefix",
+    "directory",
     "delimiter",
-    "variable",
-    "namespace",
-    "operator",
-    "escape",
-    "entity",
-    "number",
-    "string",
-    "comment",
+    "resource",
+    "identifier",
+    "fence",
 });
 
 constexpr auto additiona_modifers = std::to_array<std::string_view>({
-    "attribute",
-    "static",
+    "filepath",
+    "relative",
+    "absolute",
     "entity",
-    "declaration",
-    "reference",
-    "readonly",
+    "attribute",
+    "documentation",
     "alias",
+    "declaration",
     "open",
     "close",
-    "list",
-    "relative",
-    "name",
-    "label",
     "id",
-    "value",
-    "date",
-    "filepath",
-    "documentation",
 });
 
 constexpr auto semantic_token_modifiers = unique(limit<32>(concat(additiona_modifers, entity_keywords)));
@@ -69,7 +60,7 @@ protected:
     SemanticTokenModifiers modifiers = 0;
 
 public:
-    SemanticTokenModifierHandler(std::initializer_list<std::string_view> modifiers = {});
+    SemanticTokenModifierHandler(ModifierList modifiers = {});
     const SemanticTokenModifiers &getModifiers() const { return modifiers; };
     void setModifier(const std::string_view &modifier);
     void unsetModifier(const std::string_view &modifier);
@@ -99,8 +90,13 @@ public:
     SemanticTokenDefinition(SemanticTokenType type, SemanticTokenModifierHandler modifiers) : SemanticTokenModifierHandler(modifiers),
                                                                                               type(type) {}
 
-    SemanticTokenDefinition(std::string_view type, std::initializer_list<std::string_view> modifiers = {}) : SemanticTokenModifierHandler(modifiers),
-                                                                                                             type(static_cast<SemanticTokenType>(indexOf<semantic_token_types>(type))) {}
+    SemanticTokenDefinition(std::string_view type, ModifierList modifiers = {}) : SemanticTokenModifierHandler(modifiers),
+                                                                                  type(static_cast<SemanticTokenType>(indexOf<semantic_token_types>(type))) {}
+
+    SemanticTokenDefinition(std::string_view type, SemanticTokenModifierHandler modifiers = {}) : SemanticTokenModifierHandler(modifiers),
+                                                                                                  type(static_cast<SemanticTokenType>(indexOf<semantic_token_types>(type))) {}
+
+    SemanticTokenDefinition() : SemanticTokenDefinition(-1, SemanticTokenModifierHandler()) {}
 
     const SemanticTokenType &getType() const { return type; }
     inline std::string_view getTypeName() const { return semanticTokenTypeName(type); }
