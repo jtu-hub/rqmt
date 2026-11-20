@@ -43,6 +43,16 @@ public:
     virtual void decode(ParserContext &ctx, ASTContext &ast_ctx) override;
 };
 
+
+class Title : public SyntaxNode, public NodeDecoder
+{
+    int number_of_title_tokens;
+public:
+    Title(int number_of_title_tokens) : SyntaxNode (-1, SemanticTokenModifierHandler(), parent),
+                                                     number_of_title_tokens(number_of_title_tokens) {}
+    virtual void decode(ParserContext &ctx, ASTContext &ast_ctx) override;
+};
+
 class EntityId : public SyntaxNode, public NodeDecoder
 {
     std::string_view parent_keyword;
@@ -70,14 +80,19 @@ public:
     virtual void decode(ParserContext &ctx, ASTContext &ast_ctx) override;
 };
 
-/*
-class TagList : public SyntaxNode
+class TagList : public SyntaxNode, public NodeDecoder
 {
-};*/
+public:
+    TagList() : SyntaxNode (-1, SemanticTokenModifierHandler(), parent) {}
+    virtual void decode(ParserContext &ctx, ASTContext &ast_ctx) override;
+};
 
 class RichText : public SyntaxNode, public NodeDecoder
 {
+    SemanticTokenModifierHandler modifiers;
 public:
-    RichText(Token token, SyntaxNode *parent = nullptr) : SyntaxNode(token, "text", {"documentation"}, parent) {}
+    RichText(Token token, SyntaxNode *parent = nullptr, SemanticTokenModifierHandler modifiers = {{"documentation"}}) : SyntaxNode(token, "text", modifiers, parent),
+                                                                                                                        modifiers(modifiers) {}
     virtual void decode(ParserContext &ctx, ASTContext &ast_ctx) override;
 };
+

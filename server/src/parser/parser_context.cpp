@@ -39,7 +39,7 @@ bool ParserContext::advance(const int advance_offset)
 
 const Token &ParserContext::currentToken() const { return tks[current_token_idx]; }
 
-std::string_view ParserContext::tokenView() const
+std::string_view ParserContext::currentView() const
 {
     const Token &token = currentToken();
 
@@ -62,10 +62,26 @@ std::string_view ParserContext::peekView(int peek_idx) const
 
 bool ParserContext::isCurrentToken(TokenType type, std::string_view value) const
 {
-    return currentToken().type == type && tokenView() == value;
+    return currentToken().type == type && currentView() == value;
 }
 
 bool ParserContext::isCurrentToken(TokenType type) const
 {
     return currentToken().type == type;
 }
+
+bool ParserContext::isNextToken(TokenType type, std::string_view value, int peek_idx) const
+{
+    return peek(peek_idx).type == type && peekView(peek_idx) == value;
+}
+
+bool ParserContext::isNextToken(TokenType type, int peek_idx) const
+{
+    return peek(peek_idx).type == type;
+}
+
+bool ParserContext::isEOF() const
+{
+    return isCurrentToken(TokenType::EndOfFile);
+} 
+

@@ -15,14 +15,13 @@ bool decodeContent(ParserContext &ctx, ASTContext &ast_ctx)
     //    - @ -> if(peek(1) == decorator keyword) add new syntax node else consider text
     //  Default:
     //    - consider text -> add to previous node
-    const Token &tt = ctx.currentToken();
 
-    switch (tt.type)
+    switch (ctx.currentToken().type)
     {
     case TokenType::Text:
     {
-        const int idx_of_entity_kw = indexOf<entity_keywords>(ctx.tokenView());
-        const int idx_of_attr_kw = indexOf<attribute_keywords>(ctx.tokenView());
+        const int idx_of_entity_kw = indexOf<entity_keywords>(ctx.currentView());
+        const int idx_of_attr_kw = indexOf<attribute_keywords>(ctx.currentView());
 
         const bool is_entity = idx_of_entity_kw < entity_keywords.size();
         const bool is_attr = idx_of_attr_kw < attribute_keywords.size();
@@ -59,6 +58,21 @@ bool decodeContent(ParserContext &ctx, ASTContext &ast_ctx)
     }
     case TokenType::Modifier:
     {
+
+        const int idx_od_decor_kw = indexOf<decorator_keywords>(ctx.peekView());
+
+        const bool is_tag_list = ctx.isCurrentToken(TokenType::Modifier, "%") && ctx.isNextToken(TokenType::Fence, "[");
+        const bool is_decorator = ctx.isCurrentToken(TokenType::Modifier, "@") && idx_od_decor_kw < decorator_keywords.size();
+
+        if (is_tag_list) 
+        {
+            TagList *t_list = ast_ctx.currentParent()->addChild<TagList>();
+            t_list->decode(ctx, ast_ctx);
+        }
+        else if (is_decorator)
+        {
+            //TODO implement!
+        }
         break;
     }
     case TokenType::NewLine:
@@ -81,7 +95,7 @@ void parse(const std::string &input, TokenizerResult res, AST &ast)
 
     while (ctx.next())
     {
-        std::cout << "END OF CONTENT REACHED, STARTING NEW WITH: `" << ctx.tokenView() << "`" << std::endl;
+        std::cout << "END OF CONTENT REACHED, STARTING NEW WITH: `" << ctx.currentView() << "`" << std::endl;
         const Token &t = ctx.currentToken();
 
         switch (ctx.main_state)
@@ -132,7 +146,7 @@ void parse(const std::string &input, TokenizerResult res, AST &ast)
 
             //!\ FALL THROUGH !!!
         case ParserMainState::Content:
-            std::cout << "Content" << std::endl;
+            std::cout << "Content start at " << ctx.currentView() << std::endl;
             decodeContent(ctx, ast_ctx);
             //!\ FALL THROUGH !!!
         default:

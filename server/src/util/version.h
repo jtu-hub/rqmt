@@ -9,9 +9,9 @@
 #define MAJOR 0
 #define MINOR 0
 #define PATCH 1
-#define REVISION 29
-#define BUILD 1822
+#define REVISION 30
+#define BUILD 1861
 
-#define GIT_HASH "b5cb89a"
+#define GIT_HASH "3ad9b7f"
 
 #define k_version_str m_str(MAJOR) "." m_str(MINOR) "." m_str(PATCH) "." m_str(REVISION) "-" m_str(BUILD) " (" GIT_HASH ")" 

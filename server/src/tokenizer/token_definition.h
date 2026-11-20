@@ -13,6 +13,7 @@ enum class TokenType
     Fence,
     Modifier,
     Other,
+    EndOfFile,
 };
 
 struct OffsetRange

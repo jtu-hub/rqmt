@@ -27,7 +27,7 @@ constexpr inline bool isFence(const char &c)
 
 constexpr inline bool isPunctuation(char c)
 {
-    return std::string_view(".,_-:?!").find(c) != std::string_view::npos;
+    return std::string_view(".,_-:?!~").find(c) != std::string_view::npos;
 }
 
 constexpr inline bool isModifier(char c)

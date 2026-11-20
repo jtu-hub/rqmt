@@ -87,6 +87,13 @@ public:
             type});
     }
 
+    void addEOF() 
+    {
+        res.tokens.emplace_back(Token{
+            {offset, 0},
+            TokenType::EndOfFile});
+    }
+
     void
     resetState()
     {
@@ -148,5 +155,7 @@ TokenizerResult tokenize(const std::string &input)
 
     } while (ctx.next());
 
+    ctx.addEOF();
+    
     return ctx.getResult();
 }

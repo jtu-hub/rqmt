@@ -6,7 +6,7 @@ NodeDecoder::~NodeDecoder() = default;
 /// Entity /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Entity::decode(ParserContext &ctx, ASTContext &ast_ctx)
 {
-    const std::string_view &entity_kw_modifier = ctx.tokenView();
+    const std::string_view &entity_kw_modifier = ctx.currentView();
     definition.setModifier(entity_kw_modifier);
 
     // sequence start
@@ -23,7 +23,7 @@ void Entity::decode(ParserContext &ctx, ASTContext &ast_ctx)
     }
 
     // optional id
-    if (ctx.currentToken().type == TokenType::Punctuation && ctx.tokenView() == "-")
+    if (ctx.currentToken().type == TokenType::Punctuation && ctx.currentView() == "-")
     {
         // decode id
         EntityId *id = addChild<EntityId>(entity_kw_modifier);
@@ -31,7 +31,6 @@ void Entity::decode(ParserContext &ctx, ASTContext &ast_ctx)
         id->decode(ctx, ast_ctx);
     }
 
-    // TODO YOU ARRIVED HERE!! IMPLEMENT TITLE AND DESCRIPTION DECODERS!
     //  space(s) after entity declaraion are mandatory before optional title or description start
     if (ctx.currentToken().type == TokenType::Spaces)
     {
@@ -44,7 +43,7 @@ void Entity::decode(ParserContext &ctx, ASTContext &ast_ctx)
         while (!found_eol && !found_eot)
         {
             text_tokens++;
-
+            
             found_eol = ctx.peek(text_tokens + 1).type == TokenType::NewLine;
             found_eot = (ctx.peek(text_tokens + 1).type == TokenType::Punctuation && ctx.peekView(text_tokens + 1) == ":");
         }
@@ -52,23 +51,22 @@ void Entity::decode(ParserContext &ctx, ASTContext &ast_ctx)
         if (found_eot)
         {
             // decode title
-            // handle error where text tokens == 0 -> a column withou any title
+            // TODO handle error where text tokens == 0 -> a column withou any title
+            Title *title = addChild<Title>(text_tokens);
+
+            title->decode(ctx, ast_ctx);
         }
 
         if (found_eol || ctx.currentToken().type != TokenType::NewLine)
         {
             // decode descripion
-            // handle case where text_token is 0 -> nothing special happens here I guess
-            // handle case where no space is inserted after the ":" of the title
+            // TODO handle case where text_token is 0 -> nothing special happens here I guess
+            // TODO handle case where no space is inserted after the ":" of the title
+            RichText *rich_text = addChild<RichText>(ctx.currentToken(), nullptr, SemanticTokenModifierHandler{{"documentation", "entity"}});
+
+            rich_text->decode(ctx, ast_ctx);
         }
     }
-
-    // handle final new line(?)
-    do
-    {
-        *this += ctx.currentToken();
-        // adapt end of while to if next is RichText end condition (reference start, new line, more to come in the future)
-    } while (ctx.currentToken().type != TokenType::NewLine && ctx.next());
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,6 +117,80 @@ void EntityId::decode(ParserContext &ctx, ASTContext &ast_ctx)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Title //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Title::decode(ParserContext &ctx, ASTContext &ast_ctx)
+{
+    SyntaxNode *title = addChild<SyntaxNode>(ctx.currentToken(), "text", ModifierList{"entity", "title"});
+
+    //TODO check if number_of_title_tokens > 0, do not allow empty titles
+    ctx.advance(number_of_title_tokens);
+
+    title->operator+=(ctx.currentToken());
+
+    ctx.next();
+
+    if(ctx.isCurrentToken(TokenType::Punctuation, ":")) {
+        addChild<SyntaxNode>(ctx.currentToken(), "delimiter", ModifierList{"entity", "title"});
+        ctx.next();
+    } else {
+    //TODO sanity check failed add diagnostic
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// TagList ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// TODO YOU ARRIVED HERE
+void TagList::decode(ParserContext &ctx, ASTContext &ast_ctx)
+{
+    //TODO add sanity checks if current and next are "%" and "[" respectively
+    SyntaxNode *fence_o = addChild<SyntaxNode>(ctx.currentToken(), "fence", ModifierList{"tag-list", "open"});
+    ctx.next();
+
+    fence_o->operator+=(ctx.currentToken());
+    ctx.next();
+
+    //consume optional spaces
+    if (ctx.currentToken().type == TokenType::Spaces)
+        ctx.next();
+
+
+    while(!ctx.isCurrentToken(TokenType::Fence, "]") && !ctx.isEOF()){
+        PathDecoder *p_dec = addChild<PathDecoder>(ctx.currentToken(), nullptr, SemanticTokenModifierHandler{{"filepath", "tag-list"}});
+        p_dec->decode(ctx, ast_ctx);
+
+        //consume optional spaces
+        if (ctx.currentToken().type == TokenType::Spaces)
+            ctx.next();
+
+        //add optional "," delimiter
+        if(ctx.isCurrentToken(TokenType::Punctuation, ","))
+        {
+            addChild<SyntaxNode>(ctx.currentToken(), "delimiter", ModifierList{"tag-list"});
+            ctx.next();
+        }
+
+        //consume optional spaces
+        if (ctx.currentToken().type == TokenType::Spaces)
+            ctx.next();
+
+    }
+
+    if(ctx.isCurrentToken(TokenType::Fence, "]") )
+    {
+        addChild<SyntaxNode>(ctx.currentToken(), "fence", ModifierList{"tag-list", "close"});
+        ctx.next();
+    }
+
+    
+
+    do
+    {
+        *this += ctx.currentToken();
+        // adapt end of while to if next is RichText end condition (reference start, new line, more to come in the future)
+    } while (ctx.currentToken().type != TokenType::NewLine && ctx.next());
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// PathDecoder ////////////////////////////////////////////////////////////////////////////////////////////////////////
 void PathDecoder::decode(ParserContext &ctx, ASTContext &ast_ctx)
 {
@@ -155,6 +227,7 @@ void PathDecoder::decode(ParserContext &ctx, ASTContext &ast_ctx)
         {
             link_element_length = ctx.currentToken().length + ctx.currentToken().offset - link_element_start;
             ctx.next();
+            std::cout << ctx.currentView() << std::endl;
         }
 
         OffsetRange link_element_range = OffsetRange{.offset = link_element_start, .length = link_element_length};
@@ -193,5 +266,5 @@ void RichText::decode(ParserContext &ctx, ASTContext &ast_ctx)
         // adapt end of while to if next is RichText end condition (reference start, new line, more to come in the future)
     } while (ctx.currentToken().type != TokenType::NewLine && ctx.next());
 }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// Root ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+

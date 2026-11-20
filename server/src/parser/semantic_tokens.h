@@ -34,6 +34,8 @@ constexpr auto additiona_modifers = std::to_array<std::string_view>({
     "open",
     "close",
     "id",
+    "title",
+    "tag-list",
 });
 
 constexpr auto semantic_token_modifiers = unique(limit<32>(concat(additiona_modifers, entity_keywords)));
